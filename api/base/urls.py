@@ -7,13 +7,17 @@ from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
+from graphene_django.views import GraphQLView
 
 admin.autodiscover()
 
 urlpatterns = [
-    # Backend
+    # Backend REST API
     url(r'^api/v1/', include('v1.urls', namespace='v1')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+
+    # GraphQL
+    url(r'^graphql/', GraphQLView.as_view(graphiql=True)),
 
     # Generic Static Home
     url(r'^$', TemplateView.as_view(template_name='index.html'), name='home'),

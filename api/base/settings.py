@@ -97,6 +97,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.staticfiles',
 
+    'graphene_django',
     'rest_framework',
     'rest_framework.authtoken',
     'coreapi',
@@ -112,6 +113,11 @@ INSTALLED_APPS = (
     'django_extensions',
     'corsheaders'
 )
+
+# Where your Graphene schema lives
+GRAPHENE = {
+    'SCHEMA': 'v1.graphql.schema'
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
