@@ -7,17 +7,39 @@ const CHANGE_EVENT = 'change';
 
 var _errors = '';
 
-function setUser(user) {
-  if (!localStorage.getItem('user')) {
-    localStorage.setItem('user', JSON.stringify(user));
+class AuthStore extends EventEmitter {
+  constructor(AppDispatcher) {
+    super(AppDispatcher);
+
+    this.state = {
+      loading: true,
+      recipes: [],
+      filter: {},
+      total_recipes: 0
+    };
+
+    AppDispatcher.register(payload => {
+      switch(payload.actionType) {
+        case AuthConstants.LOGIN_USER:
+          setUser(action.user);
+          AuthStore.emitChange();
+          browserHistory.push('/');
+          break;
+
+        case AuthConstants.LOGIN_ERROR:
+          _errors = action.error;
+          AuthStore.emitChange();
+          break;
+
+        case AuthConstants.LOGOUT_USER:
+          removeUser();
+          AuthStore.emitChange();
+          browserHistory.push('/');
+          break;
+      }
+    });
   }
-}
 
-function removeUser() {
-  localStorage.removeItem('user');
-}
-
-class AuthStoreClass extends EventEmitter {
   emitChange() {
     this.emit(CHANGE_EVENT);
   }
@@ -49,38 +71,16 @@ class AuthStoreClass extends EventEmitter {
   getErrors() {
     return _errors;
   }
-}
 
-const AuthStore = new AuthStoreClass();
-
-// Here we register a callback for the dispatcher
-// and look for our various action types so we can
-// respond appropriately
-AuthStore.dispatchToken = AppDispatcher.register(action => {
-
-  switch(action.actionType) {
-
-    case AuthConstants.LOGIN_USER:
-      setUser(action.user);
-      AuthStore.emitChange();
-      browserHistory.push('/');
-      break;
-
-    case AuthConstants.LOGIN_ERROR:
-      _errors = action.error;
-      AuthStore.emitChange();
-      break;
-
-    case AuthConstants.LOGOUT_USER:
-      removeUser();
-      AuthStore.emitChange();
-      browserHistory.push('/');
-      break;
-
-    default:
+  setUser(user) {
+    if (!localStorage.getItem('user')) {
+      localStorage.setItem('user', JSON.stringify(user));
+    }
   }
 
+  removeUser() {
+    localStorage.removeItem('user');
+  }
+};
 
-});
-
-export default AuthStore;
+module.exports = new AuthStore(AppDispatcher);
