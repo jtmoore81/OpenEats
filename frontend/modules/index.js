@@ -15,6 +15,7 @@ import App from './base/components/App'
 import Footer from './base/components/Footer'
 import NotFound from './base/components/404'
 import Login from './account/components/Login'
+import { Admin } from './account/components/Admin'
 import News from './news/components/News'
 import Browse from './browse/components/Browse'
 import GroceryList from './list/components/GroceryList'
@@ -40,6 +41,7 @@ const routeConfig = [
     childRoutes: [
       { path: 'news', component: News },
       { path: 'login', component: Login },
+      { path: 'admin', component: Admin },
       { path: 'browse', component: Browse },
       { path: 'list', component: GroceryList, onEnter: requireAuth ,
         childRoutes: [
