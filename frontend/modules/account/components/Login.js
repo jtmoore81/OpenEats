@@ -12,41 +12,53 @@ import AuthStore from '../stores/AuthStore';
 // Load in the base CSS
 require("./../css/login.scss");
 
-function getAuthErrors() {
-  return {
-    authenticated: AuthStore.isAuthenticated(),
-    errors: AuthStore.getErrors()
-  };
-}
+class Login extends React.Component {
+  constructor(props) {
+    super(props);
 
-export default injectIntl(React.createClass({
-  getInitialState: function() {
-    return getAuthErrors();
-  },
+    this.state = {
+      data: this.props.data || []
+    };
 
-  componentDidMount: function() {
+    this.getAuthErrors = this.getAuthErrors.bind(this);
+    this._onChange = this._onChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  getInitialState() {
+    return this.getAuthErrors();
+  }
+
+  getAuthErrors() {
+    return {
+      authenticated: AuthStore.isAuthenticated(),
+      errors: AuthStore.getErrors()
+    };
+  }
+
+  componentDidMount() {
     if (AuthStore.isAuthenticated()) {
       browserHistory.push('/');
     }
     AuthStore.addChangeListener(this._onChange);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     AuthStore.removeChangeListener(this._onChange);
-  },
+  }
 
-  _onChange: function() {
-    this.setState(getAuthErrors());
-  },
+  _onChange() {
+    this.setState(this.getAuthErrors());
+  }
 
-  handleSubmit: function(e) {
+  handleSubmit(e) {
     e.preventDefault();
-    var username = this.refs.username.value;
-    var pass = this.refs.pass.value;
+    let username = this.refs.username.value;
+    let pass = this.refs.pass.value;
     AuthActions.getToken(username, pass);
-  },
-  render: function() {
+  }
 
+  render() {
     const {formatMessage} = this.props.intl;
     const messages = defineMessages({
       please_sign_in: {
@@ -74,14 +86,29 @@ export default injectIntl(React.createClass({
     return (
       <form className="form-signin" onSubmit={this.handleSubmit}>
         { this.state.errors ? ( <Alert/> ) : ''}
-        <h2 className="form-signin-heading">{ formatMessage(messages.please_sign_in) }</h2>
-        <input type="text" id="username" className="form-control" placeholder={ formatMessage(messages.username) } ref="username" autoFocus="true"/>
-        <input type="password" id="password" className="form-control" placeholder={ formatMessage(messages.password) } ref="pass"/>
-        <button className="btn btn-lg btn-primary btn-block" type="submit">{ formatMessage(messages.sign_in) }</button>
+        <h2 className="form-signin-heading">
+          { formatMessage(messages.please_sign_in) }
+        </h2>
+        <input
+          type="text"
+          id="username"
+          className="form-control"
+          placeholder={ formatMessage(messages.username) }
+          ref="username"
+          autoFocus="true"/>
+        <input
+          type="password"
+          id="password"
+          className="form-control"
+          placeholder={ formatMessage(messages.password) }
+          ref="pass"/>
+        <button className="btn btn-lg btn-primary btn-block" type="submit">
+          { formatMessage(messages.sign_in) }
+        </button>
       </form>
     )
   }
-}));
+}
 
 var Alert = injectIntl(React.createClass({
   render: function() {
@@ -107,3 +134,5 @@ var Alert = injectIntl(React.createClass({
     )
   }
 }));
+
+module.exports = injectIntl(Login);

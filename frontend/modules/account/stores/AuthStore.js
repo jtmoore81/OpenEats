@@ -5,8 +5,6 @@ import { browserHistory } from 'react-router'
 
 const CHANGE_EVENT = 'change';
 
-var _errors = '';
-
 class AuthStore extends EventEmitter {
   constructor(AppDispatcher) {
     super(AppDispatcher);
@@ -15,25 +13,26 @@ class AuthStore extends EventEmitter {
       loading: true,
       recipes: [],
       filter: {},
-      total_recipes: 0
+      total_recipes: 0,
+      errors: ''
     };
 
     AppDispatcher.register(payload => {
       switch(payload.actionType) {
         case AuthConstants.LOGIN_USER:
-          setUser(action.user);
-          AuthStore.emitChange();
+          this.setUser(payload.user);
+          this.emitChange();
           browserHistory.push('/');
           break;
 
         case AuthConstants.LOGIN_ERROR:
-          _errors = action.error;
-          AuthStore.emitChange();
+          this.state.errors = payload.error;
+          this.emitChange();
           break;
 
         case AuthConstants.LOGOUT_USER:
-          removeUser();
-          AuthStore.emitChange();
+          this.removeUser();
+          this.emitChange();
           browserHistory.push('/');
           break;
       }
@@ -52,6 +51,15 @@ class AuthStore extends EventEmitter {
     this.removeListener(CHANGE_EVENT, callback)
   }
 
+  getToken() {
+    const user = this.getUser();
+    return user.token;
+  }
+
+  getErrors() {
+    return this.state.errors;
+  }
+
   isAuthenticated() {
     if (localStorage.getItem('user')) {
       return true;
@@ -59,17 +67,8 @@ class AuthStore extends EventEmitter {
     return false;
   }
 
-  getToken() {
-    const user = this.getUser();
-    return user.token;
-  }
-
   getUser() {
     return JSON.parse(localStorage.getItem('user'));
-  }
-
-  getErrors() {
-    return _errors;
   }
 
   setUser(user) {
@@ -81,6 +80,6 @@ class AuthStore extends EventEmitter {
   removeUser() {
     localStorage.removeItem('user');
   }
-};
+}
 
 module.exports = new AuthStore(AppDispatcher);
