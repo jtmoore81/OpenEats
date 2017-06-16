@@ -18,3 +18,7 @@ class IsAdminOrUser(permissions.BasePermission):
 
         # No one but the admin or the user can view/update the account
         return obj.user == request.user
+
+    def has_permission(self, request, view):
+        # No one but the admin or the user can view/update the accounts
+        return request.user and request.user.is_superuser
