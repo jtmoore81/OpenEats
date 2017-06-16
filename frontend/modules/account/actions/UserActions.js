@@ -10,7 +10,6 @@ export default {
       .get(url)
       .end((err, res) => {
         if (!err && res) {
-          console.log(res.body.results);
           AppDispatcher.dispatch({
             actionType: UserConstants.USER_INIT,
             user: res.body.results,
