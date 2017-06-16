@@ -25,7 +25,6 @@ class Admin extends React.Component {
   }
 
   getStateFromStore() {
-    console.log(UserStore.getState());
     return UserStore.getState()
   }
 
