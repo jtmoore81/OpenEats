@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router'
 import {
     injectIntl,
     IntlProvider,
@@ -44,12 +45,33 @@ class Admin extends React.Component {
   render() {
     const {formatMessage} = this.props.intl;
     const messages = defineMessages({
-      tmp: {
-        id: 'admin.tmp',
+      admin_panel: {
+        id: 'admin.admin_panel',
         description: 'Please sign in header',
         defaultMessage: 'Please sign in',
       },
+      user_tab: {
+        id: 'admin.user_tab',
+        description: 'User Management',
+        defaultMessage: 'User Management',
+      },
+      news_tab: {
+        id: 'admin.news_tab',
+        description: 'News Management',
+        defaultMessage: 'News Management',
+      },
+      course_tab: {
+        id: 'admin.course_tab',
+        description: 'Course Management',
+        defaultMessage: 'Course Management',
+      },
+      cuisine_tab: {
+        id: 'admin.cuisine_tab',
+        description: 'Cuisine Management',
+        defaultMessage: 'Cuisine Management',
+      },
     });
+
     let table = '';
     if (this.state.users.length > 0) {
       table = this.state.users.map((user) => {
@@ -68,13 +90,21 @@ class Admin extends React.Component {
         <div className="row">
           <div className="col-xs-3">
             <div className="list-group">
-              <a href="#" className="list-group-item disabled">
-                Cras justo odio
-              </a>
-              <a href="#" className="list-group-item">Dapibus ac facilisis in</a>
-              <a href="#" className="list-group-item">Morbi leo risus</a>
-              <a href="#" className="list-group-item">Porta ac consectetur ac</a>
-              <a href="#" className="list-group-item">Vestibulum at eros</a>
+              <Link href="#" className="list-group-item disabled">
+                { formatMessage(messages.admin_panel) }
+              </Link>
+              <Link to="/admin/user" className="list-group-item">
+                { formatMessage(messages.user_tab) }
+              </Link>
+              <Link to="/admin/news" className="list-group-item">
+                { formatMessage(messages.news_tab) }
+              </Link>
+              <Link to="/admin/course" className="list-group-item">
+                { formatMessage(messages.course_tab) }
+              </Link>
+              <Link to="/admin/cuisine" className="list-group-item">
+                { formatMessage(messages.cuisine_tab) }
+              </Link>
             </div>
           </div>
           <div className="col-xs-9">

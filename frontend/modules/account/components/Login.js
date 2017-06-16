@@ -8,7 +8,6 @@ import {
 import { browserHistory } from 'react-router'
 import AuthActions from '../actions/AuthActions';
 import AuthStore from '../stores/AuthStore';
-import { Alert } from './Alert';
 
 // Load in the base CSS
 require("./../css/login.scss");
@@ -107,6 +106,31 @@ class Login extends React.Component {
           { formatMessage(messages.sign_in) }
         </button>
       </form>
+    )
+  }
+}
+
+class Alert extends React.Component {
+  render() {
+    const {formatMessage} = this.props.intl;
+    const messages = defineMessages({
+      title: {
+        id: 'login.alert.unable_to_login',
+        description: 'Fail to login header',
+        defaultMessage: 'Unable to login!',
+      },
+      message: {
+        id: 'login.alert.confirm',
+        description: 'Fail to login message',
+        defaultMessage: 'Please confirm that the username and password are correct.',
+      }
+    });
+
+    return (
+      <div className="alert alert-danger">
+        <strong>{ formatMessage(messages.title) }</strong>
+        { formatMessage(messages.message) }
+      </div>
     )
   }
 }
