@@ -1,5 +1,4 @@
 import React from 'react'
-import { Link } from 'react-router'
 import {
     injectIntl,
     IntlProvider,
@@ -7,7 +6,11 @@ import {
     formatMessage
 } from 'react-intl';
 import UserActions from '../actions/UserActions';
+import BrowseActions from '../../browse/actions/BrowseActions';
 import { UserStore } from '../stores/UserStore';
+import { CourseStore, CuisineStore } from '../../browse/stores/FilterStores';
+import { AdminTable } from './AdminTable';
+import { LeftRail } from './LeftRail';
 
 // Load in the base CSS
 require("./../css/admin.scss");
@@ -18,9 +21,11 @@ class Admin extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = this.getStateFromStore();
+    this.state = { users: this.getStateFromStore() };
 
     this.getStateFromStore = this.getStateFromStore.bind(this);
+    this._onChangeCuisines = this._onChangeCuisines.bind(this);
+    this._onChangeCourses = this._onChangeCourses.bind(this);
     this._onChange = this._onChange.bind(this);
   }
 
@@ -30,15 +35,29 @@ class Admin extends React.Component {
 
   componentDidMount() {
     UserStore.addChangeListener(this._onChange);
-    UserActions.init()
+    CourseStore.addChangeListener(this._onChangeCourses);
+    CuisineStore.addChangeListener(this._onChangeCuisines);
+    UserActions.init();
+    BrowseActions.loadCourses({});
+    BrowseActions.loadCuisines({});
   }
 
   componentWillUnmount() {
     UserStore.removeChangeListener(this._onChange);
+    CourseStore.removeChangeListener(this._onChangeCourses);
+    CuisineStore.removeChangeListener(this._onChangeCuisines);
   }
 
   _onChange() {
-    this.setState(this.getStateFromStore());
+    this.setState({users: this.getStateFromStore()});
+  }
+
+  _onChangeCourses() {
+    this.setState({courses: CourseStore.getState()['data']});
+  }
+
+  _onChangeCuisines() {
+    this.setState({cuisines: CuisineStore.getState()['data']});
   }
 
   render() {
@@ -49,79 +68,16 @@ class Admin extends React.Component {
         description: 'Please sign in header',
         defaultMessage: 'Please sign in',
       },
-      user_tab: {
-        id: 'admin.user_tab',
-        description: 'User Management',
-        defaultMessage: 'User Management',
-      },
-      news_tab: {
-        id: 'admin.news_tab',
-        description: 'News Management',
-        defaultMessage: 'News Management',
-      },
-      course_tab: {
-        id: 'admin.course_tab',
-        description: 'Course Management',
-        defaultMessage: 'Course Management',
-      },
-      cuisine_tab: {
-        id: 'admin.cuisine_tab',
-        description: 'Cuisine Management',
-        defaultMessage: 'Cuisine Management',
-      },
     });
-
-    let table = '';
-    if (this.state.users.length > 0) {
-      table = this.state.users.map((user) => {
-        return (
-          <tr key={ user.username }>
-            <td>{ user.username }</td>
-            <td>{ user.date_joined }</td>
-            <td>{ user.is_staff }</td>
-          </tr>
-        )
-      });
-    }
 
     return (
       <div className="container">
         <div className="row">
           <div className="col-xs-3">
-            <div className="list-group">
-              <Link href="#" className="list-group-item disabled">
-                { formatMessage(messages.admin_panel) }
-              </Link>
-              <Link to="/admin/user" className="list-group-item">
-                { formatMessage(messages.user_tab) }
-              </Link>
-              <Link to="/admin/news" className="list-group-item">
-                { formatMessage(messages.news_tab) }
-              </Link>
-              <Link to="/admin/course" className="list-group-item">
-                { formatMessage(messages.course_tab) }
-              </Link>
-              <Link to="/admin/cuisine" className="list-group-item">
-                { formatMessage(messages.cuisine_tab) }
-              </Link>
-            </div>
+            <LeftRail/>
           </div>
           <div className="col-xs-9">
-            <div className="table-responsive">
-              <table className="table table-hover">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Username</th>
-                  </tr>
-                </thead>
-                <tbody>
-                { table }
-                </tbody>
-              </table>
-            </div>
+            <AdminTable users={ this.state.users.users }/>
           </div>
         </div>
       </div>

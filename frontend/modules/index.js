@@ -41,7 +41,6 @@ const routeConfig = [
     childRoutes: [
       { path: 'news', component: News },
       { path: 'login', component: Login },
-      { path: 'admin', component: Admin },
       { path: 'browse', component: Browse },
       { path: 'list', component: GroceryList, onEnter: requireAuth ,
         childRoutes: [
@@ -56,10 +55,15 @@ const routeConfig = [
           { path: ':recipe', component: Recipe }
         ]
       },
+      { path: 'admin', component: Admin, onEnter: requireAuth ,
+        childRoutes: [
+          { path: ':type', component: Admin, onEnter: requireAuth },
+        ]
+      },
       { path: '*', component: NotFound }
     ]
   }
-]
+];
 
 render((
     <IntlProvider locale={ process.env.LOCALE } messages={ messages }>
