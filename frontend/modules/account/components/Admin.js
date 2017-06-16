@@ -5,35 +5,41 @@ import {
     defineMessages,
     formatMessage
 } from 'react-intl';
+import UserActions from '../actions/UserActions';
+import { UserStore } from '../stores/UserStore';
 
 // Load in the base CSS
 require("./../css/admin.scss");
+
+import { Input } from '../../common/form/FormComponents'
 
 class Admin extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      data: this.props.data || []
-    };
+    this.state = this.getStateFromStore();
 
-    // this.loadRecipesFromServer = this.loadRecipesFromServer.bind(this);
+    this.getStateFromStore = this.getStateFromStore.bind(this);
+    this._onChange = this._onChange.bind(this);
   }
 
-  // componentDidMount() {
-  //   if (AuthStore.isAuthenticated()) {
-  //     browserHistory.push('/');
-  //   }
-  //   AuthStore.addChangeListener(this._onChange);
-  // }
-  //
-  // componentWillUnmount() {
-  //   AuthStore.removeChangeListener(this._onChange);
-  // }
-  //
-  // _onChange() {
-  //   this.setState(getAuthErrors());
-  // }
+  getStateFromStore() {
+    console.log(UserStore.getState());
+    return UserStore.getState()
+  }
+
+  componentDidMount() {
+    UserStore.addChangeListener(this._onChange);
+    UserActions.init()
+  }
+
+  componentWillUnmount() {
+    UserStore.removeChangeListener(this._onChange);
+  }
+
+  _onChange() {
+    this.setState(this.getStateFromStore());
+  }
 
   render() {
     const {formatMessage} = this.props.intl;
@@ -44,6 +50,18 @@ class Admin extends React.Component {
         defaultMessage: 'Please sign in',
       },
     });
+    let table = '';
+    if (this.state.users.length > 0) {
+      table = this.state.users.map((user) => {
+        return (
+          <tr key={ user.username }>
+            <td>{ user.username }</td>
+            <td>{ user.date_joined }</td>
+            <td>{ user.is_staff }</td>
+          </tr>
+        )
+      });
+    }
 
     return (
       <div className="container">
@@ -71,24 +89,7 @@ class Admin extends React.Component {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td>Larry</td>
-                    <td>the Bird</td>
-                    <td>@twitter</td>
-                  </tr>
+                { table }
                 </tbody>
               </table>
             </div>

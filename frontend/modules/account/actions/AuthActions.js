@@ -5,7 +5,7 @@ import {serverURLs} from '../../common/config'
 
 export default {
   getToken: function(username, pass) {
-    var url = serverURLs.auth_token;
+    let url = serverURLs.auth_token;
     request
       .post(url)
       .send({'username': username, 'password': pass})
