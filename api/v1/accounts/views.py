@@ -9,16 +9,22 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 
 from .serializers import UserSerializer
+from .permissions import IsAdminOrUser
 
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = (IsAdminOrUser,)
 
     def retrieve(self, request, pk=None):
         """ Tests if a users is authentication if they supply pk == 'i' """
         if pk == 'i':
-            return Response(UserSerializer(request.user, context={'request':request}).data)
+            return Response(
+                UserSerializer(
+                    request.user, context={'request':request}
+                ).data
+            )
         return super(UserViewSet, self).retrieve(request, pk)
 
 
