@@ -6,6 +6,7 @@ if (process.env.API_URL) {
 var apiUrl = apiHost + '/api/v1';
 
 export var serverURLs = {
+  users: apiUrl + '/accounts/users/',
   auth_token: apiUrl + '/accounts/obtain-auth-token/',
   browse: apiUrl + '/recipe/recipes/?fields=id,title,pub_date,rating,photo_thumbnail,info',
   mini_browse: apiUrl + '/recipe/mini-browse/',

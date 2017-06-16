@@ -21,6 +21,7 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response(UserSerializer(request.user, context={'request':request}).data)
         return super(UserViewSet, self).retrieve(request, pk)
 
+
 class CustomObtainAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
