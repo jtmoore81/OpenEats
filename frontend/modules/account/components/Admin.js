@@ -68,7 +68,7 @@ class Admin extends React.Component {
             <LeftRail/>
           </div>
           <div className="col-xs-9">
-            <AdminTable users={ this.state.users.users }/>
+            <UserTable users={ this.state.users.users }/>
           </div>
         </div>
       </div>
