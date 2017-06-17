@@ -9,7 +9,7 @@ import UserActions from '../actions/UserActions';
 import BrowseActions from '../../browse/actions/BrowseActions';
 import { UserStore } from '../stores/UserStore';
 import { CourseStore, CuisineStore } from '../../browse/stores/FilterStores';
-import { AdminTable } from './AdminTable';
+import { UserTable } from './UserTable';
 import { LeftRail } from './LeftRail';
 
 // Load in the base CSS
@@ -61,15 +61,6 @@ class Admin extends React.Component {
   }
 
   render() {
-    const {formatMessage} = this.props.intl;
-    const messages = defineMessages({
-      admin_panel: {
-        id: 'admin.admin_panel',
-        description: 'Please sign in header',
-        defaultMessage: 'Please sign in',
-      },
-    });
-
     return (
       <div className="container">
         <div className="row">
