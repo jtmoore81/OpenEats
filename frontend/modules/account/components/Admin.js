@@ -62,7 +62,7 @@ class Admin extends React.Component {
 
   render() {
     return (
-      <div className="container">
+      <div className="container admin-container">
         <div className="row">
           <div className="col-xs-3">
             <LeftRail/>

@@ -1,5 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router'
+import {
+    injectIntl,
+    IntlProvider,
+    defineMessages,
+    formatMessage
+} from 'react-intl';
 
 class UserTable extends React.Component {
   render() {
@@ -33,9 +39,13 @@ class UserTable extends React.Component {
         return (
           <tr key={ user.username }>
             <td>{ user.username }</td>
-            <td>{ user.firstname }</td>
-            <td>{ user.lastname }</td>
-            <td>{ user.is_staff }</td>
+            <td>{ user.first_name }</td>
+            <td>{ user.last_name }</td>
+            <td> { user.is_staff ?
+                <span className="glyphicon glyphicon-ok" aria-hidden="true"/> :
+                <span className="glyphicon glyphicon-remove" aria-hidden="true"/>
+              }
+            </td>
           </tr>
         )
       });
@@ -61,4 +71,4 @@ class UserTable extends React.Component {
   }
 }
 
-module.exports.UserTable = UserTable;
+module.exports.UserTable = injectIntl(UserTable);
