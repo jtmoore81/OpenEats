@@ -7,6 +7,8 @@ import {
     formatMessage
 } from 'react-intl';
 
+import { UserForm } from './UserForm'
+
 class UserTable extends React.Component {
   render() {
     const {formatMessage} = this.props.intl;
@@ -66,6 +68,7 @@ class UserTable extends React.Component {
           { table }
           </tbody>
         </table>
+        <UserForm/>
       </div>
     )
   }

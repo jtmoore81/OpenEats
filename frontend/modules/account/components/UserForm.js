@@ -5,73 +5,56 @@ import {
     defineMessages,
     formatMessage
 } from 'react-intl';
+import { Modal } from 'react-bootstrap'
 
 import { Input, Alert, TextArea, Checkbox } from '../../common/form/FormComponents'
+
 
 class UserForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = this.getStateFromStore();
 
-    // this._onInit = this._onInit.bind(this);
-    // this._onChange = this._onChange.bind(this);
-    // this.setErrors = this.setErrors.bind(this);
-    // this.CreateRecipe = this.CreateRecipe.bind(this);
-  }
-  //
-  // getStateFromStore() {
-  //   return {
-  //     data: RecipeStore.getForm(),
-  //     course: RecipeStore.getCourse(),
-  //     cuisine: RecipeStore.getCuisine(),
-  //     tags: RecipeStore.getTags(),
-  //     errors: false
-  //   };
-  // }
-  //
-  // getErrorsFromStore() {
-  //   return RecipeStore.getError();
-  // }
-  //
-  // getAuthUser() {
-  //   return AuthStore.getUser();
-  // }
+    this.state = {
+      username: this.props.username || '',
+      firstname: this.props.firstname || '',
+      lastname: this.props.lastname || '',
+      isAdmin: this.props.isAdmin || '',
+      errors: this.props.errors || '',
+      showModal: true,
+    };
 
-  componentDidMount() {
+    this.save = this.save.bind(this);
+    this.close = this.close.bind(this);
+    this.update = this.update.bind(this);
+    this.getErrors = this.getErrors.bind(this);
   }
 
-  componentWillUnmount() {
-  }
-
-  // _onInit() {
-  //   const state = this.getStateFromStore();
-  //   this.setState(state);
-  // }
-  //
-  // _onChange() {
-  //   this.setState({ data: RecipeStore.getForm() });
-  // }
-  //
   // setErrors() {
   //   this.setState({
   //     errors: this.getErrorsFromStore()
   //   });
   // }
-  //
-  // CreateRecipe(e) {
-  //   e.preventDefault();
-  //   RecipeActions.submit(this.state.data);
-  // }
+
+  save(e) {
+    e.preventDefault();
+    this.close();
+  }
+
+  close() {
+    this.setState({ showModal: false });
+  }
 
   update(name, value) {
   }
 
   getErrors(name) {
-    return (this.state.errors !== false && name in this.state.errors) ? this.state.errors[name] : false ;
+    return ''
+    // return (
+    //   this.state.errors !== false && name in this.state.errors
+    // ) ? this.state.errors[name] : false ;
   }
 
   render() {
-
     const {formatMessage} = this.props.intl;
     const messages = defineMessages({
       username: {
@@ -108,43 +91,43 @@ class UserForm extends React.Component {
         </Modal.Header>
         <Modal.Body>
           <Input
-              name="title"
-              type="text"
-              label={ formatMessage(messages.username) }
-              placeholder={ formatMessage(messages.username) }
-              change={ this.update }
-              value={ this.state.data.title }
-              errors={ this.getErrors('title') } />
-            <Input
-              name="title"
-              type="text"
-              label={ formatMessage(messages.firstname) }
-              placeholder={ formatMessage(messages.firstname) }
-              change={ this.update }
-              value={ this.state.data.title }
-              errors={ this.getErrors('title') } />
-            <TextArea
-              name="info"
-              rows="4"
-              label={ formatMessage(messages.lastname) }
-              placeholder={ formatMessage(messages.lastname) }
-              change={ this.update }
-              value={ this.state.data.info }
-              errors={ this.getErrors('info') } />
-            <Checkbox
-              name="source"
-              type="text"
-              label={ formatMessage(messages.isAdmin) }
-              change={ this.update }
-              value={ this.state.data.source }
-              errors={ this.getErrors('source') } />
+            name="title"
+            type="text"
+            label={ formatMessage(messages.username) }
+            placeholder={ formatMessage(messages.username) }
+            change={ this.update }
+            value={ this.state.username }
+            errors={ this.getErrors('title') } />
+          <Input
+            name="title"
+            type="text"
+            label={ formatMessage(messages.firstname) }
+            placeholder={ formatMessage(messages.firstname) }
+            change={ this.update }
+            value={ this.state.firstname }
+            errors={ this.getErrors('title') } />
+          <TextArea
+            name="info"
+            rows="4"
+            label={ formatMessage(messages.lastname) }
+            placeholder={ formatMessage(messages.lastname) }
+            change={ this.update }
+            value={ this.state.lastname }
+            errors={ this.getErrors('info') } />
+          <Checkbox
+            name="source"
+            type="text"
+            label={ formatMessage(messages.isAdmin) }
+            change={ this.update }
+            value={ this.state.isAdmin }
+            errors={ this.getErrors('source') } />
 
-            { this.state.errors !== false ? ( <Alert/> ) : ''}
+          { this.state.errors !== false ? ( <Alert/> ) : ''}
         </Modal.Body>
         <Modal.Footer>
           <button
             className="btn btn-primary"
-            onClick={ this.CreateRecipe }>
+            onClick={ this.save }>
               { formatMessage(messages.submit) }
           </button>
         </Modal.Footer>
