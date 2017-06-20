@@ -20,13 +20,26 @@ class UserForm extends React.Component {
       lastname: this.props.lastname || '',
       isAdmin: this.props.isAdmin || '',
       errors: this.props.errors || '',
-      showModal: true,
+      showModal: this.props.showModal || false,
     };
 
     this.save = this.save.bind(this);
     this.close = this.close.bind(this);
     this.update = this.update.bind(this);
     this.getErrors = this.getErrors.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.showModal !== this.props.showModal) {
+      this.setState({
+        username: nextProps.username,
+        firstname: nextProps.firstname,
+        lastname: nextProps.lastname,
+        isAdmin: nextProps.isAdmin,
+        errors: nextProps.errors,
+        showModal: nextProps.showModal
+      });
+    }
   }
 
   // setErrors() {

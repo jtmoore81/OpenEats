@@ -10,6 +10,32 @@ import {
 import { UserForm } from './UserForm'
 
 class UserTable extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      users: this.props.users || '',
+      username: this.props.username || '',
+      firstname: this.props.firstname || '',
+      lastname: this.props.lastname || '',
+      isAdmin: this.props.isAdmin || '',
+      showModal: this.props.showModal || '',
+    };
+
+    this.popup = this.popup.bind(this);
+  }
+
+  popup(user) {
+    this.setState({
+      username: user.username || '',
+      firstname: user.firstname || '',
+      lastname: user.lastname || '',
+      isAdmin: user.isAdmin || '',
+      showModal: true,
+    });
+    console.log(user)
+  }
+
   render() {
     const {formatMessage} = this.props.intl;
     const messages = defineMessages({
@@ -35,11 +61,13 @@ class UserTable extends React.Component {
       },
     });
 
+
+    console.log(this.state)
     let table = '';
     if (this.props.users.length > 0) {
       table = this.props.users.map((user) => {
         return (
-          <tr key={ user.username }>
+          <tr key={ user.username } onClick={ () => this.popup(user) }>
             <td>{ user.username }</td>
             <td>{ user.first_name }</td>
             <td>{ user.last_name }</td>
@@ -50,7 +78,7 @@ class UserTable extends React.Component {
             </td>
           </tr>
         )
-      });
+      }, this);
     }
 
     return (
@@ -68,7 +96,13 @@ class UserTable extends React.Component {
           { table }
           </tbody>
         </table>
-        <UserForm/>
+        <UserForm
+          username={ this.state.username || '' }
+          firstname={ this.state.firstname || '' }
+          lastname={ this.state.lastname || '' }
+          isAdmin={ this.state.isAdmin || '' }
+          showModal={ this.state.showModal || '' }
+        />
       </div>
     )
   }
