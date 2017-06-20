@@ -28,12 +28,11 @@ class UserTable extends React.Component {
   popup(user) {
     this.setState({
       username: user.username || '',
-      firstname: user.firstname || '',
-      lastname: user.lastname || '',
+      firstname: user.first_name || '',
+      lastname: user.last_name || '',
       isAdmin: user.isAdmin || '',
       showModal: true,
     });
-    console.log(user)
   }
 
   render() {
@@ -61,8 +60,6 @@ class UserTable extends React.Component {
       },
     });
 
-
-    console.log(this.state)
     let table = '';
     if (this.props.users.length > 0) {
       table = this.props.users.map((user) => {

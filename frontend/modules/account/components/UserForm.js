@@ -30,7 +30,7 @@ class UserForm extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.showModal !== this.props.showModal) {
+    if (nextProps.showModal === true) {
       this.setState({
         username: nextProps.username,
         firstname: nextProps.firstname,
