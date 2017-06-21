@@ -38,6 +38,20 @@ class UserStore extends EventEmitter {
   getState() {
     return this.state;
   }
+
+  getActiveUser(key) {
+    let user = this.state.users.filter((user) => {
+      if (user.username === key) {
+        return user;
+      }
+    });
+
+    if (user.length > 0) {
+      return user[0];
+    } else {
+      return null;
+    }
+  }
 }
 
 module.exports.UserStore = new UserStore(AppDispatcher);

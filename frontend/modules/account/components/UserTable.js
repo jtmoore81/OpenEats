@@ -1,38 +1,54 @@
 import React from 'react'
-import { Link } from 'react-router'
 import {
     injectIntl,
     IntlProvider,
     defineMessages,
     formatMessage
 } from 'react-intl';
-
-import { UserForm } from './UserForm'
+import { Modal } from 'react-bootstrap'
+import { Input, Alert, TextArea, Checkbox } from '../../common/form/FormComponents'
 
 class UserTable extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      activeUser: this.props.activeUser || '',
       users: this.props.users || '',
-      username: this.props.username || '',
-      firstname: this.props.firstname || '',
-      lastname: this.props.lastname || '',
-      isAdmin: this.props.isAdmin || '',
-      showModal: this.props.showModal || '',
+      showModal: this.props.showModal || false,
     };
 
-    this.popup = this.popup.bind(this);
+    this.open = this.open.bind(this);
+    this.save = this.save.bind(this);
+    this.close = this.close.bind(this);
+    this.update = this.update.bind(this);
+    this.getErrors = this.getErrors.bind(this);
   }
 
-  popup(user) {
+  open(user) {
     this.setState({
-      username: user.username || '',
-      firstname: user.first_name || '',
-      lastname: user.last_name || '',
-      isAdmin: user.isAdmin || '',
+      activeUser: user || '',
       showModal: true,
     });
+  }
+
+  save(e) {
+    e.preventDefault();
+    this.close();
+  }
+
+  close() {
+    this.setState({ showModal: false });
+  }
+
+  update(name, value) {
+  }
+
+  getErrors(name) {
+    return ''
+    // return (
+    //   this.state.errors !== false && name in this.state.errors
+    // ) ? this.state.errors[name] : false ;
   }
 
   render() {
@@ -58,13 +74,18 @@ class UserTable extends React.Component {
         description: 'isAdmin',
         defaultMessage: 'Super User',
       },
+      submit: {
+        id: 'admin.user.submit',
+        description: 'Submit',
+        defaultMessage: 'Submit',
+      },
     });
 
     let table = '';
     if (this.props.users.length > 0) {
       table = this.props.users.map((user) => {
         return (
-          <tr key={ user.username } onClick={ () => this.popup(user) }>
+          <tr key={ user.username } onClick={ () => this.open(user) }>
             <td>{ user.username }</td>
             <td>{ user.first_name }</td>
             <td>{ user.last_name }</td>
@@ -79,27 +100,71 @@ class UserTable extends React.Component {
     }
 
     return (
-      <div className="table-responsive">
-        <table className="table table-hover">
-          <thead>
-            <tr>
-              <th>{ formatMessage(messages.username) }</th>
-              <th>{ formatMessage(messages.firstname) }</th>
-              <th>{ formatMessage(messages.lastname) }</th>
-              <th>{ formatMessage(messages.isAdmin) }</th>
-            </tr>
-          </thead>
-          <tbody>
-          { table }
-          </tbody>
-        </table>
-        <UserForm
-          username={ this.state.username || '' }
-          firstname={ this.state.firstname || '' }
-          lastname={ this.state.lastname || '' }
-          isAdmin={ this.state.isAdmin || '' }
-          showModal={ this.state.showModal || '' }
-        />
+      <div className="user-form">
+        <div className="table-responsive">
+          <table className="table table-hover">
+            <thead>
+              <tr>
+                <th>{ formatMessage(messages.username) }</th>
+                <th>{ formatMessage(messages.firstname) }</th>
+                <th>{ formatMessage(messages.lastname) }</th>
+                <th>{ formatMessage(messages.isAdmin) }</th>
+              </tr>
+            </thead>
+            <tbody>
+            { table }
+            </tbody>
+          </table>
+        </div>
+
+
+        <Modal show={ this.state.showModal } onHide={ this.close }>
+          <Modal.Header closeButton>
+            <Modal.Title>Modal heading</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Input
+              name="title"
+              type="text"
+              label={ formatMessage(messages.username) }
+              placeholder={ formatMessage(messages.username) }
+              change={ this.update }
+              value={ this.state.activeUser.username }
+              errors={ this.getErrors('title') } />
+            <Input
+              name="title"
+              type="text"
+              label={ formatMessage(messages.firstname) }
+              placeholder={ formatMessage(messages.firstname) }
+              change={ this.update }
+              value={ this.state.activeUser.first_name }
+              errors={ this.getErrors('title') } />
+            <TextArea
+              name="info"
+              rows="4"
+              label={ formatMessage(messages.lastname) }
+              placeholder={ formatMessage(messages.lastname) }
+              change={ this.update }
+              value={ this.state.activeUser.last_name }
+              errors={ this.getErrors('info') } />
+            <Checkbox
+              name="source"
+              type="text"
+              label={ formatMessage(messages.isAdmin) }
+              change={ this.update }
+              value={ this.state.activeUser.is_superuser }
+              errors={ this.getErrors('source') } />
+
+            { this.state.errors !== false ? ( <Alert/> ) : ''}
+          </Modal.Body>
+          <Modal.Footer>
+            <button
+              className="btn btn-primary"
+              onClick={ this.save }>
+                { formatMessage(messages.submit) }
+            </button>
+          </Modal.Footer>
+        </Modal>
       </div>
     )
   }
