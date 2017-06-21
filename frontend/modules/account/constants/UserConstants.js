@@ -1,5 +1,7 @@
 import keyMirror from 'keymirror';
 
 export default keyMirror({
-  USER_INIT: null,
+  ADMIN_INIT_USER: null,
+  ADMIN_SET_USER_SUCCESS: null,
+  ADMIN_SET_USER_ERROR: null,
 });

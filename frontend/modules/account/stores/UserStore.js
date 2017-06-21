@@ -15,7 +15,7 @@ class UserStore extends EventEmitter {
 
     AppDispatcher.register(payload => {
       switch(payload.actionType) {
-        case UserConstants.USER_INIT:
+        case UserConstants.ADMIN_INIT_USER:
           this.state.users = payload.user;
           this.emitChange();
           break;

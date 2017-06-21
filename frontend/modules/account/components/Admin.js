@@ -15,8 +15,6 @@ import { LeftRail } from './LeftRail';
 // Load in the base CSS
 require("./../css/admin.scss");
 
-import { Input } from '../../common/form/FormComponents'
-
 class Admin extends React.Component {
   constructor(props) {
     super(props);
