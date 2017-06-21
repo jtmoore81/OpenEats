@@ -26,8 +26,10 @@ class UserTable extends React.Component {
   }
 
   open(user) {
+    // Get a deep copy of the filter state
+    let newUser = JSON.parse(JSON.stringify(user));
     this.setState({
-      activeUser: user || '',
+      activeUser: newUser || '',
       showModal: true,
     });
   }
@@ -42,6 +44,9 @@ class UserTable extends React.Component {
   }
 
   update(name, value) {
+    let newActiveUser = this.state.activeUser;
+    newActiveUser[name] = value;
+    this.setState({ activeUser: newActiveUser })
   }
 
   getErrors(name) {
@@ -124,7 +129,7 @@ class UserTable extends React.Component {
           </Modal.Header>
           <Modal.Body>
             <Input
-              name="title"
+              name="username"
               type="text"
               label={ formatMessage(messages.username) }
               placeholder={ formatMessage(messages.username) }
@@ -132,7 +137,7 @@ class UserTable extends React.Component {
               value={ this.state.activeUser.username }
               errors={ this.getErrors('title') } />
             <Input
-              name="title"
+              name="first_name"
               type="text"
               label={ formatMessage(messages.firstname) }
               placeholder={ formatMessage(messages.firstname) }
@@ -140,7 +145,7 @@ class UserTable extends React.Component {
               value={ this.state.activeUser.first_name }
               errors={ this.getErrors('title') } />
             <TextArea
-              name="info"
+              name="last_name"
               rows="4"
               label={ formatMessage(messages.lastname) }
               placeholder={ formatMessage(messages.lastname) }
@@ -148,7 +153,7 @@ class UserTable extends React.Component {
               value={ this.state.activeUser.last_name }
               errors={ this.getErrors('info') } />
             <Checkbox
-              name="source"
+              name="is_superuser"
               type="text"
               label={ formatMessage(messages.isAdmin) }
               change={ this.update }
