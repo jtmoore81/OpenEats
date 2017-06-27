@@ -6,6 +6,7 @@ import {
     formatMessage
 } from 'react-intl';
 import { Modal } from 'react-bootstrap'
+import UserActions from '../actions/UserActions'
 import { Input, Alert, TextArea, Checkbox } from '../../common/form/FormComponents'
 
 class UserTable extends React.Component {
@@ -18,6 +19,7 @@ class UserTable extends React.Component {
       showModal: this.props.showModal || false,
     };
 
+    this.new = this.new.bind(this);
     this.open = this.open.bind(this);
     this.save = this.save.bind(this);
     this.close = this.close.bind(this);
@@ -25,18 +27,31 @@ class UserTable extends React.Component {
     this.getErrors = this.getErrors.bind(this);
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({users: nextProps.users});
+  }
+
   open(user) {
     // Get a deep copy of the filter state
     let newUser = JSON.parse(JSON.stringify(user));
     this.setState({
-      activeUser: newUser || '',
+      activeUser: newUser || {},
+      showModal: true,
+    });
+  }
+
+  new(e) {
+    e.preventDefault();
+    this.setState({
+      activeUser: {},
       showModal: true,
     });
   }
 
   save(e) {
     e.preventDefault();
-    this.close();
+    UserActions.setUser(this.state.activeUser);
+    // this.close();
   }
 
   close() {
@@ -79,6 +94,11 @@ class UserTable extends React.Component {
         description: 'isAdmin',
         defaultMessage: 'Super User',
       },
+      new_user: {
+        id: 'admin.user.new_user',
+        description: 'New User',
+        defaultMessage: 'New User',
+      },
       submit: {
         id: 'admin.user.submit',
         description: 'Submit',
@@ -87,8 +107,8 @@ class UserTable extends React.Component {
     });
 
     let table = '';
-    if (this.props.users.length > 0) {
-      table = this.props.users.map((user) => {
+    if (this.state.users.length > 0) {
+      table = this.state.users.map((user) => {
         return (
           <tr key={ user.username } onClick={ () => this.open(user) }>
             <td>{ user.username }</td>
@@ -122,6 +142,12 @@ class UserTable extends React.Component {
           </table>
         </div>
 
+        <button
+          className="btn btn-primary"
+          onClick={ this.new }>
+            { formatMessage(messages.new_user) }
+        </button>
+
 
         <Modal show={ this.state.showModal } onHide={ this.close }>
           <Modal.Header closeButton>
@@ -144,9 +170,9 @@ class UserTable extends React.Component {
               change={ this.update }
               value={ this.state.activeUser.first_name }
               errors={ this.getErrors('title') } />
-            <TextArea
+            <Input
               name="last_name"
-              rows="4"
+              type="text"
               label={ formatMessage(messages.lastname) }
               placeholder={ formatMessage(messages.lastname) }
               change={ this.update }

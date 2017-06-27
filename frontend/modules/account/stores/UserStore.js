@@ -19,6 +19,32 @@ class UserStore extends EventEmitter {
           this.state.users = payload.user;
           this.emitChange();
           break;
+
+        case UserConstants.ADMIN_SET_USER_SUCCESS:
+          let user = this.state.users.filter((user) => {
+            if (user.id === payload.user.id) {
+              return user;
+            }
+          });
+          console.log(user);
+          if (user.length > 0) {
+            user[0].email = payload.user.email;
+            user[0].username = payload.user.username;
+            user[0].last_name = payload.user.last_name;
+            user[0].first_name = payload.user.first_name;
+            user[0].is_superuser = payload.user.is_superuser;
+          } else {
+            this.state.users.push({
+              id: payload.user.id,
+              email: payload.user.email,
+              username: payload.user.username,
+              last_name: payload.user.last_name,
+              first_name: payload.user.first_name,
+              is_superuser: payload.user.is_superuser
+            })
+          }
+          this.emitChange();
+          break;
       }
     });
   }

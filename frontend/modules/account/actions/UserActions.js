@@ -23,14 +23,14 @@ export default {
   setUser: function(data) {
     let r = 'id' in data ?
       request.patch(serverURLs.users + data.id + '/') :
-      request.post(serverURLs.users) ;
+      request.post(serverURLs.users);
 
     r.send(data)
       .end((err, res) => {
         if (!err && res) {
           AppDispatcher.dispatch({
             actionType: UserConstants.ADMIN_SET_USER_SUCCESS,
-            user: res.body.results,
+            user: res.body,
           });
         } else {
           AppDispatcher.dispatch({
