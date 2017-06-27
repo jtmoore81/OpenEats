@@ -43,16 +43,24 @@ class LeftRail extends React.Component {
         <Link href="#" className="list-group-item disabled">
           { formatMessage(messages.admin_panel) }
         </Link>
-        <Link to="/admin/user" className="list-group-item">
+        <Link to="/admin/user"
+              className="list-group-item"
+              activeClassName="active">
           { formatMessage(messages.user_tab) }
         </Link>
-        <Link to="/admin/news" className="list-group-item">
+        <Link to="/admin/news"
+              className="list-group-item"
+              activeClassName="active">
           { formatMessage(messages.news_tab) }
         </Link>
-        <Link to="/admin/course" className="list-group-item">
+        <Link to="/admin/course"
+              className="list-group-item"
+              activeClassName="active">
           { formatMessage(messages.course_tab) }
         </Link>
-        <Link to="/admin/cuisine" className="list-group-item">
+        <Link to="/admin/cuisine"
+              className="list-group-item"
+              activeClassName="active">
           { formatMessage(messages.cuisine_tab) }
         </Link>
       </div>
