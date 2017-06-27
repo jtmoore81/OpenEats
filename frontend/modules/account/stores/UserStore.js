@@ -35,7 +35,6 @@ class UserStore extends EventEmitter {
               return user;
             }
           });
-          console.log(user);
           if (user.length > 0) {
             user[0].email = payload.user.email;
             user[0].username = payload.user.username;
