@@ -20,6 +20,15 @@ class UserStore extends EventEmitter {
           this.emitChange();
           break;
 
+        case UserConstants.ADMIN_DELETE_USER_SUCCESS:
+          this.state.users = this.state.users.filter((user) => {
+            if (user.id !== payload.userId) {
+              return user;
+            }
+          });
+          this.emitChange();
+          break;
+
         case UserConstants.ADMIN_SET_USER_SUCCESS:
           let user = this.state.users.filter((user) => {
             if (user.id === payload.user.id) {

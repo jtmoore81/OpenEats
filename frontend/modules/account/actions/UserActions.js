@@ -42,4 +42,24 @@ export default {
         }
       });
   },
+
+  deleteUser: function(id) {
+    request.delete(serverURLs.users + id + '/')
+      .end((err, res) => {
+        if (!err && res) {
+          AppDispatcher.dispatch({
+            actionType: UserConstants.ADMIN_DELETE_USER_SUCCESS,
+            userId: id,
+          });
+        } else {
+          AppDispatcher.dispatch({
+            actionType: UserConstants.ADMIN_DELETE_USER_ERROR,
+            userId: res.body,
+            response: res.body,
+          });
+          console.error(serverURLs.users, err.toString());
+          console.error(res.body);
+        }
+      });
+  },
 }

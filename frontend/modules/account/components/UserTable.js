@@ -22,6 +22,7 @@ class UserTable extends React.Component {
     this.new = this.new.bind(this);
     this.open = this.open.bind(this);
     this.save = this.save.bind(this);
+    this.delete = this.delete.bind(this);
     this.close = this.close.bind(this);
     this.update = this.update.bind(this);
     this.getErrors = this.getErrors.bind(this);
@@ -51,11 +52,20 @@ class UserTable extends React.Component {
   save(e) {
     e.preventDefault();
     UserActions.setUser(this.state.activeUser);
-    // this.close();
+    this.close();
   }
 
   close() {
     this.setState({ showModal: false });
+  }
+
+  delete(e) {
+    e.preventDefault();
+    // TODO: This logic might be better in the store.
+    if (confirm("Are you sure you want to delete this?")) {
+      UserActions.deleteUser(this.state.activeUser.id);
+      this.close();
+    }
   }
 
   update(name, value) {
@@ -98,6 +108,11 @@ class UserTable extends React.Component {
         id: 'admin.user.new_user',
         description: 'New User',
         defaultMessage: 'New User',
+      },
+      delete: {
+        id: 'admin.user.delete',
+        description: 'Delete',
+        defaultMessage: 'Delete',
       },
       submit: {
         id: 'admin.user.submit',
@@ -189,6 +204,11 @@ class UserTable extends React.Component {
             { this.state.errors !== false ? ( <Alert/> ) : ''}
           </Modal.Body>
           <Modal.Footer>
+            <button
+              className="btn btn-danger"
+              onClick={ this.delete }>
+                { formatMessage(messages.delete) }
+            </button>
             <button
               className="btn btn-primary"
               onClick={ this.save }>
