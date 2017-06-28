@@ -16,6 +16,7 @@ class UserTable extends React.Component {
     this.state = {
       activeUser: this.props.activeUser || '',
       users: this.props.users || '',
+      errors: this.props.errors || false,
       showModal: this.props.showModal || false,
     };
 
@@ -75,7 +76,7 @@ class UserTable extends React.Component {
   }
 
   getErrors(name) {
-    return ''
+    return false
     // return (
     //   this.state.errors !== false && name in this.state.errors
     // ) ? this.state.errors[name] : false ;
