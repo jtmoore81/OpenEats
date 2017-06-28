@@ -26,22 +26,16 @@ class PasswordSerializer(serializers.Serializer):
     confirm_password = serializers.CharField()
 
     def create(self, validated_data):
-        print 'create'
-        print validated_data
+        """ This end point shouldn't be creating users, just updating them"""
         return {}
-
 
     def update(self, instance, validated_data):
-        print 'update'
-        print instance
-        print validated_data
+        # Check old password, do nothing if its the same.
+        if instance.check_password(self.old_password):
+            # Make sure we typed in the password correctly
+            if self.new_password == self.confirm_password:
+                # set_password also hashes the password that the user will get
+                instance.set_password(self.new_password)
+                instance.save()
 
-        # Check old password
-        # if not instance.check_password(self.old_password):
-            # return Response({"old_password": ["Wrong password."]}, status=status.HTTP_400_BAD_REQUEST)
-        # set_password also hashes the password that the user will get
-        # instance.set_password(self.new_password)
-        # instance.save()
-        # return Response("Success.", status=status.HTTP_200_OK)
-
-        return {}
+        return instance

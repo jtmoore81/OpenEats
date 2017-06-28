@@ -27,19 +27,30 @@ class UserViewSet(viewsets.ModelViewSet):
             )
         return super(UserViewSet, self).retrieve(request, pk)
 
+    def create(self, request, *args, **kwargs):
+        response = super(UserViewSet, self).create(request, *args, **kwargs)
+        # After we create the user, update the password.
+        self.update_password(User.objects.get(pk=response.data.get('id')))
+        return response
+
     def update(self, request, *args, **kwargs):
+        response = super(UserViewSet, self).update(request, *args, **kwargs)
+        # Update the password.
+        self.update_password(self.get_object())
+        return response
+
+    def update_password(self, instance):
+        # TODO: mine the data for passwords
+        # make sure to add logic to check if the password needs to be updated
         data = {
             'old_password': '123',
             'new_password': '123',
             'confirm_password': '123',
         }
-        # triggers an create
-        # serializer = PasswordSerializer(request.user, data=data)
-        # triggers an update
-        serializer = PasswordSerializer(request.user, data=data)
-        print serializer.is_valid()
-        print serializer.save()
-        return super(UserViewSet, self).update(request, *args, **kwargs)
+
+        serializer = PasswordSerializer(instance, data=data)
+        if serializer.is_valid():
+            serializer.save()
 
 
 class CustomObtainAuthToken(ObtainAuthToken):
