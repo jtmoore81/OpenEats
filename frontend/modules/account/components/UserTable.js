@@ -85,6 +85,11 @@ class UserTable extends React.Component {
   render() {
     const {formatMessage} = this.props.intl;
     const messages = defineMessages({
+      modelHeader: {
+        id: 'admin.user.modelHeader',
+        description: 'Edit a user',
+        defaultMessage: 'Edit a user',
+      },
       username: {
         id: 'admin.user.username',
         description: 'Username',
@@ -114,6 +119,11 @@ class UserTable extends React.Component {
         id: 'admin.user.delete',
         description: 'Delete',
         defaultMessage: 'Delete',
+      },
+      cancel: {
+        id: 'admin.user.cancel',
+        description: 'Cancel',
+        defaultMessage: 'Cancel',
       },
       submit: {
         id: 'admin.user.submit',
@@ -157,19 +167,18 @@ class UserTable extends React.Component {
             </tbody>
           </table>
         </div>
-
         <button
           className="btn btn-primary"
           onClick={ this.new }>
             { formatMessage(messages.new_user) }
         </button>
 
-
         <Modal show={ this.state.showModal } onHide={ this.close }>
           <Modal.Header closeButton>
-            <Modal.Title>Modal heading</Modal.Title>
+            <Modal.Title>{ formatMessage(messages.modelHeader) }</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+            { this.state.errors !== false ? ( <Alert/> ) : ''}
             <Input
               name="username"
               type="text"
@@ -198,11 +207,10 @@ class UserTable extends React.Component {
               name="is_superuser"
               type="text"
               label={ formatMessage(messages.isAdmin) }
+              placeholder={ formatMessage(messages.isAdmin) }
               change={ this.update }
               value={ this.state.activeUser.is_superuser }
               errors={ this.getErrors('source') } />
-
-            { this.state.errors !== false ? ( <Alert/> ) : ''}
           </Modal.Body>
           <Modal.Footer>
             <button
@@ -211,9 +219,14 @@ class UserTable extends React.Component {
                 { formatMessage(messages.delete) }
             </button>
             <button
-              className="btn btn-primary"
+              className="btn btn-success"
               onClick={ this.save }>
                 { formatMessage(messages.submit) }
+            </button>
+            <button
+              className="btn btn-primary"
+              onClick={ this.close }>
+                { formatMessage(messages.cancel) }
             </button>
           </Modal.Footer>
         </Modal>
