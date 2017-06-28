@@ -1,7 +1,7 @@
 import React from 'react'
 import { injectIntl, defineMessages } from 'react-intl'
 
-import AuthStore from '../../account/stores/AuthStore'
+import AuthStore from '../../auth/stores/AuthStore'
 import ListAction from '../actions/ListActions'
 import { ListStore, CHANGE_EVENT, INIT_EVENT  } from '../stores/ListStore'
 import ListContainer from '../../list/components/ListContainer'

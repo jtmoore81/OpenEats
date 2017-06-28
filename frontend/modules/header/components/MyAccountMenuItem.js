@@ -8,7 +8,7 @@ import {
 import { NavDropdown, MenuItem, NavItem } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 
-import AuthActions from '../../account/actions/AuthActions';
+import AuthActions from '../../auth/actions/AuthActions';
 
 class AccountLoginMenuItem extends React.Component {
   render () {

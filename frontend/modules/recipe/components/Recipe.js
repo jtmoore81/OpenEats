@@ -8,7 +8,7 @@ import {
     formatMessage
 } from 'react-intl'
 
-import AuthStore from '../../account/stores/AuthStore'
+import AuthStore from '../../auth/stores/AuthStore'
 import MiniBrowse from '../../browse/components/MiniBrowse'
 import { serverURLs } from '../../common/config'
 import Ingredients from './Ingredients'

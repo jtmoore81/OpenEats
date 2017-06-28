@@ -1,7 +1,7 @@
 import request from 'superagent';
 import { serverURLs } from '../../common/config'
 import AppDispatcher from '../../common/AppDispatcher';
-import AuthStore from '../../account/stores/AuthStore';
+import AuthStore from '../../auth/stores/AuthStore';
 import ListConstants from '../constants/ListConstants';
 
 class ListActions {

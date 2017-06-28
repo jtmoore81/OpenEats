@@ -1,6 +1,6 @@
 import request from 'superagent';
 import AppDispatcher from '../../common/AppDispatcher';
-import AuthStore from '../../account/stores/AuthStore';
+import AuthStore from '../../auth/stores/AuthStore';
 import { ItemStore } from '../stores/ItemStore';
 import ItemConstants from '../constants/ItemConstants';
 import ListConstants from '../constants/ListConstants';

@@ -14,15 +14,15 @@ const messages = require('../locale/'+process.env.LOCALE+'.json');
 import App from './base/components/App'
 import Footer from './base/components/Footer'
 import NotFound from './base/components/404'
-import Login from './account/components/Login'
-import { Admin } from './account/components/Admin'
+import Login from './auth/components/Login'
+import { Admin } from './admin/components/Admin'
 import News from './news/components/News'
 import Browse from './browse/components/Browse'
 import GroceryList from './list/components/GroceryList'
 import { RecipeForm } from './recipe_form/components/RecipeForm'
 import { ImportForm } from './recipe_form/components/ImportForm'
 import Recipe from './recipe/components/Recipe'
-import AuthStore from './account/stores/AuthStore'
+import AuthStore from './auth/stores/AuthStore'
 
 // Load in the base CSS
 require("../node_modules/bootstrap-sass/assets/stylesheets/_bootstrap.scss");

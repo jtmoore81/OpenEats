@@ -1,4 +1,4 @@
-import AuthStore from '../account/stores/AuthStore'
+import AuthStore from '../auth/stores/AuthStore'
 import defaults from 'superagent-defaults'
 
 // Create a defaults context

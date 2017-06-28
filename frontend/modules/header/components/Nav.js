@@ -9,7 +9,7 @@ import {
 import { Image, Navbar, Nav, NavDropdown, MenuItem, NavItem } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 
-import AuthStore from '../../account/stores/AuthStore';
+import AuthStore from '../../auth/stores/AuthStore';
 import { ListStore, CHANGE_EVENT } from '../../list/stores/ListStore';
 import ListActions from '../../list/actions/ListActions';
 

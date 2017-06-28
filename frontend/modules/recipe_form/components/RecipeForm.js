@@ -6,7 +6,7 @@ import {
     defineMessages,
     formatMessage
 } from 'react-intl';
-import AuthStore from '../../account/stores/AuthStore'
+import AuthStore from '../../auth/stores/AuthStore'
 import { RecipeStore, INIT_EVENT, ERROR_EVENT, CHANGE_EVENT } from '../stores/RecipeStore';
 import RecipeActions from '../actions/RecipeActions';
 
