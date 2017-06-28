@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 
-from .serializers import UserSerializer
+from .serializers import UserSerializer, PasswordSerializer
 from .permissions import IsAdminOrUser
 
 
@@ -26,6 +26,20 @@ class UserViewSet(viewsets.ModelViewSet):
                 ).data
             )
         return super(UserViewSet, self).retrieve(request, pk)
+
+    def update(self, request, *args, **kwargs):
+        data = {
+            'old_password': '123',
+            'new_password': '123',
+            'confirm_password': '123',
+        }
+        # triggers an create
+        # serializer = PasswordSerializer(request.user, data=data)
+        # triggers an update
+        serializer = PasswordSerializer(request.user, data=data)
+        print serializer.is_valid()
+        print serializer.save()
+        return super(UserViewSet, self).update(request, *args, **kwargs)
 
 
 class CustomObtainAuthToken(ObtainAuthToken):
