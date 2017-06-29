@@ -43,9 +43,9 @@ class UserViewSet(viewsets.ModelViewSet):
         # TODO: mine the data for passwords
         # make sure to add logic to check if the password needs to be updated
         data = {
-            'old_password': self.request.query_params.get('oldPassword', ''),
-            'new_password': self.request.query_params.get('newPassword', ''),
-            'confirm_password': self.request.query_params.get('confirmPassword', ''),
+            'old_password': self.request.data.get('oldPassword', ''),
+            'new_password': self.request.data.get('newPassword', ''),
+            'confirm_password': self.request.data.get('confirmPassword', ''),
         }
 
         serializer = PasswordSerializer(instance, data=data)

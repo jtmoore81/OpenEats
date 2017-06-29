@@ -31,11 +31,11 @@ class PasswordSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         # Check old password, do nothing if its the same.
-        if instance.check_password(self.old_password):
+        if instance.check_password(validated_data.get('old_password')) or not instance.has_usable_password():
             # Make sure we typed in the password correctly
-            if self.new_password == self.confirm_password:
+            if validated_data.get('new_password') == validated_data.get('confirm_password'):
                 # set_password also hashes the password that the user will get
-                instance.set_password(self.new_password)
+                instance.set_password(validated_data.get('new_password'))
                 instance.save()
 
         return instance
