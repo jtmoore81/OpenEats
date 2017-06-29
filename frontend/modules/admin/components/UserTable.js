@@ -105,6 +105,31 @@ class UserTable extends React.Component {
         description: 'lastname',
         defaultMessage: 'Last name',
       },
+      oldPassword: {
+        id: 'admin.user.oldPassword',
+        description: 'oldPassword',
+        defaultMessage: 'Old Password',
+      },
+      newPassword: {
+        id: 'admin.user.newPassword',
+        description: 'newPassword',
+        defaultMessage: 'New Password',
+      },
+      confirmPassword: {
+        id: 'admin.user.confirmPassword',
+        description: 'confirmPassword',
+        defaultMessage: 'Confirm Password',
+      },
+      note: {
+        id: 'admin.user.note',
+        description: 'note',
+        defaultMessage: 'NOTE',
+      },
+      noteMessage: {
+        id: 'admin.user.noteMessage',
+        description: 'noteMessage',
+        defaultMessage: 'Leaving the password fields blank will not update them.',
+      },
       isAdmin: {
         id: 'admin.user.isAdmin',
         description: 'isAdmin',
@@ -203,6 +228,33 @@ class UserTable extends React.Component {
               change={ this.update }
               value={ this.state.activeUser.last_name }
               errors={ this.getErrors('info') } />
+            <hr/>
+            <p className="note">
+              <b>{ formatMessage(messages.note) }</b>:&nbsp;
+              { formatMessage(messages.noteMessage) }
+            </p>
+            <Input
+              name="oldPassword"
+              type="text"
+              label={ formatMessage(messages.oldPassword) }
+              placeholder={ formatMessage(messages.oldPassword) }
+              change={ this.update }
+              errors={ this.getErrors('oldPassword') } />
+            <Input
+              name="newPassword"
+              type="text"
+              label={ formatMessage(messages.newPassword) }
+              placeholder={ formatMessage(messages.newPassword) }
+              change={ this.update }
+              errors={ this.getErrors('newPassword') } />
+            <Input
+              name="confirmPassword"
+              type="text"
+              label={ formatMessage(messages.confirmPassword) }
+              placeholder={ formatMessage(messages.confirmPassword) }
+              change={ this.update }
+              errors={ this.getErrors('confirmPassword') } />
+            <hr/>
             <Checkbox
               name="is_superuser"
               type="text"
