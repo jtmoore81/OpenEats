@@ -59,6 +59,7 @@ class Login extends React.Component {
   }
 
   render() {
+    let IntlAlert = injectIntl(Alert);
     const {formatMessage} = this.props.intl;
     const messages = defineMessages({
       please_sign_in: {
@@ -85,7 +86,7 @@ class Login extends React.Component {
 
     return (
       <form className="form-signin" onSubmit={this.handleSubmit}>
-        { this.state.errors ? ( <Alert/> ) : ''}
+        { this.state.errors ? ( <IntlAlert/> ) : ''}
         <h2 className="form-signin-heading">
           { formatMessage(messages.please_sign_in) }
         </h2>
