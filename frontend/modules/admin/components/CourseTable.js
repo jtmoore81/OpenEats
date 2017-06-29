@@ -9,13 +9,13 @@ import { Modal } from 'react-bootstrap'
 import UserActions from '../actions/UserActions'
 import { Input, Alert, TextArea, Checkbox } from '../../common/form/FormComponents'
 
-class UserTable extends React.Component {
+class CourseTable extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      activeUser: this.props.activeUser || '',
-      users: this.props.users || '',
+      active: this.props.active || '',
+      data: this.props.data || '',
       errors: this.props.errors || false,
       showModal: this.props.showModal || false,
     };
@@ -30,14 +30,15 @@ class UserTable extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({users: nextProps.users});
+    console.log('state', nextProps.data);
+    this.setState({data: nextProps.data});
   }
 
-  open(user) {
+  open(data) {
     // Get a deep copy of the filter state
-    let newUser = JSON.parse(JSON.stringify(user));
+    let newItem = JSON.parse(JSON.stringify(data));
     this.setState({
-      activeUser: newUser || {},
+      active: newItem || {},
       showModal: true,
     });
   }
@@ -45,14 +46,14 @@ class UserTable extends React.Component {
   new(e) {
     e.preventDefault();
     this.setState({
-      activeUser: {},
+      active: {},
       showModal: true,
     });
   }
 
   save(e) {
     e.preventDefault();
-    UserActions.setUser(this.state.activeUser);
+    UserActions.setUser(this.state.active);
     this.close();
   }
 
@@ -64,15 +65,15 @@ class UserTable extends React.Component {
     e.preventDefault();
     // TODO: This logic might be better in the store.
     if (confirm("Are you sure you want to delete this?")) {
-      UserActions.deleteUser(this.state.activeUser.id);
+      UserActions.deleteUser(this.state.active.id);
       this.close();
     }
   }
 
   update(name, value) {
-    let newActiveUser = this.state.activeUser;
-    newActiveUser[name] = value;
-    this.setState({ activeUser: newActiveUser })
+    let newActive = this.state.active;
+    newActive[name] = value;
+    this.setState({ active: newActive })
   }
 
   getErrors(name) {
@@ -90,55 +91,16 @@ class UserTable extends React.Component {
         description: 'Edit a user',
         defaultMessage: 'Edit a user',
       },
-      username: {
-        id: 'admin.user.username',
-        description: 'Username',
-        defaultMessage: 'Username',
+      title: {
+        id: 'admin.user.title',
+        description: 'title',
+        defaultMessage: 'title',
       },
-      firstname: {
-        id: 'admin.user.firstname',
-        description: 'firstname',
-        defaultMessage: 'First name',
-      },
-      lastname: {
-        id: 'admin.user.lastname',
-        description: 'lastname',
-        defaultMessage: 'Last name',
-      },
-      oldPassword: {
-        id: 'admin.user.oldPassword',
-        description: 'oldPassword',
-        defaultMessage: 'Old Password',
-      },
-      newPassword: {
-        id: 'admin.user.newPassword',
-        description: 'newPassword',
-        defaultMessage: 'New Password',
-      },
-      confirmPassword: {
-        id: 'admin.user.confirmPassword',
-        description: 'confirmPassword',
-        defaultMessage: 'Confirm Password',
-      },
-      note: {
-        id: 'admin.user.note',
-        description: 'note',
-        defaultMessage: 'NOTE',
-      },
-      noteMessage: {
-        id: 'admin.user.noteMessage',
-        description: 'noteMessage',
-        defaultMessage: 'Leaving the password fields blank will not update them.',
-      },
-      isAdmin: {
-        id: 'admin.user.isAdmin',
-        description: 'isAdmin',
-        defaultMessage: 'Super User',
-      },
-      new_user: {
-        id: 'admin.user.new_user',
-        description: 'New User',
-        defaultMessage: 'New User',
+
+      new: {
+        id: 'admin.user.new',
+        description: 'New',
+        defaultMessage: 'New',
       },
       delete: {
         id: 'admin.user.delete',
@@ -158,18 +120,11 @@ class UserTable extends React.Component {
     });
 
     let table = '';
-    if (this.state.users.length > 0) {
-      table = this.state.users.map((user) => {
+    if (this.state.data.length > 0) {
+      table = this.state.data.map((item) => {
         return (
-          <tr key={ user.username } onClick={ () => this.open(user) }>
-            <td>{ user.username }</td>
-            <td>{ user.first_name }</td>
-            <td>{ user.last_name }</td>
-            <td> { user.is_staff ?
-                <span className="glyphicon glyphicon-ok" aria-hidden="true"/> :
-                <span className="glyphicon glyphicon-remove" aria-hidden="true"/>
-              }
-            </td>
+          <tr key={ item.id } onClick={ () => this.open(item) }>
+            <td>{ item.title }</td>
           </tr>
         )
       }, this);
@@ -181,10 +136,7 @@ class UserTable extends React.Component {
           <table className="table table-hover">
             <thead>
               <tr>
-                <th>{ formatMessage(messages.username) }</th>
-                <th>{ formatMessage(messages.firstname) }</th>
-                <th>{ formatMessage(messages.lastname) }</th>
-                <th>{ formatMessage(messages.isAdmin) }</th>
+                <th>{ formatMessage(messages.title) }</th>
               </tr>
             </thead>
             <tbody>
@@ -195,7 +147,7 @@ class UserTable extends React.Component {
         <button
           className="btn btn-primary"
           onClick={ this.new }>
-            { formatMessage(messages.new_user) }
+            { formatMessage(messages.new) }
         </button>
 
         <Modal show={ this.state.showModal } onHide={ this.close }>
@@ -207,62 +159,11 @@ class UserTable extends React.Component {
             <Input
               name="username"
               type="text"
-              label={ formatMessage(messages.username) }
-              placeholder={ formatMessage(messages.username) }
+              label={ formatMessage(messages.title) }
+              placeholder={ formatMessage(messages.title) }
               change={ this.update }
-              value={ this.state.activeUser.username }
+              value={ this.state.active.username }
               errors={ this.getErrors('title') } />
-            <Input
-              name="first_name"
-              type="text"
-              label={ formatMessage(messages.firstname) }
-              placeholder={ formatMessage(messages.firstname) }
-              change={ this.update }
-              value={ this.state.activeUser.first_name }
-              errors={ this.getErrors('title') } />
-            <Input
-              name="last_name"
-              type="text"
-              label={ formatMessage(messages.lastname) }
-              placeholder={ formatMessage(messages.lastname) }
-              change={ this.update }
-              value={ this.state.activeUser.last_name }
-              errors={ this.getErrors('info') } />
-            <hr/>
-            <p className="note">
-              <b>{ formatMessage(messages.note) }</b>:&nbsp;
-              { formatMessage(messages.noteMessage) }
-            </p>
-            <Input
-              name="oldPassword"
-              type="text"
-              label={ formatMessage(messages.oldPassword) }
-              placeholder={ formatMessage(messages.oldPassword) }
-              change={ this.update }
-              errors={ this.getErrors('oldPassword') } />
-            <Input
-              name="newPassword"
-              type="text"
-              label={ formatMessage(messages.newPassword) }
-              placeholder={ formatMessage(messages.newPassword) }
-              change={ this.update }
-              errors={ this.getErrors('newPassword') } />
-            <Input
-              name="confirmPassword"
-              type="text"
-              label={ formatMessage(messages.confirmPassword) }
-              placeholder={ formatMessage(messages.confirmPassword) }
-              change={ this.update }
-              errors={ this.getErrors('confirmPassword') } />
-            <hr/>
-            <Checkbox
-              name="is_superuser"
-              type="text"
-              label={ formatMessage(messages.isAdmin) }
-              placeholder={ formatMessage(messages.isAdmin) }
-              change={ this.update }
-              value={ this.state.activeUser.is_superuser }
-              errors={ this.getErrors('source') } />
           </Modal.Body>
           <Modal.Footer>
             <button
@@ -287,4 +188,4 @@ class UserTable extends React.Component {
   }
 }
 
-module.exports.UserTable = injectIntl(UserTable);
+module.exports.CourseTable = injectIntl(CourseTable);
