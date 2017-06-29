@@ -40,8 +40,6 @@ class UserViewSet(viewsets.ModelViewSet):
         return response
 
     def update_password(self, instance):
-        # TODO: mine the data for passwords
-        # make sure to add logic to check if the password needs to be updated
         data = {
             'old_password': self.request.data.get('oldPassword', ''),
             'new_password': self.request.data.get('newPassword', ''),
