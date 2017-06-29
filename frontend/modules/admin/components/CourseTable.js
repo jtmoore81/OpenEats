@@ -165,7 +165,7 @@ class UserTable extends React.Component {
             <td>{ user.username }</td>
             <td>{ user.first_name }</td>
             <td>{ user.last_name }</td>
-            <td> { user.is_superuser ?
+            <td> { user.is_staff ?
                 <span className="glyphicon glyphicon-ok" aria-hidden="true"/> :
                 <span className="glyphicon glyphicon-remove" aria-hidden="true"/>
               }
@@ -261,7 +261,7 @@ class UserTable extends React.Component {
               label={ formatMessage(messages.isAdmin) }
               placeholder={ formatMessage(messages.isAdmin) }
               change={ this.update }
-              checked={ this.state.activeUser.is_superuser }
+              value={ this.state.activeUser.is_superuser }
               errors={ this.getErrors('source') } />
           </Modal.Body>
           <Modal.Footer>
