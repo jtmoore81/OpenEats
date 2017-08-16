@@ -18,7 +18,7 @@ mock==2.0.0
 pytz==2016.10
 graphene-django==1.3
 
-git+git://github.com/RyanNoelk/recipe-scraper.git@1.0.6
+git+git://github.com/RyanNoelk/recipe-scraper.git@1.0.7
 
 # Will need these once I start supporting metric mesurments
 sympy==0.7.6.1
