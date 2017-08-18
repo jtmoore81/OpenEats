@@ -2,8 +2,11 @@
 # encoding: utf-8
 from __future__ import unicode_literals
 
-from graphene_django import DjangoObjectType
 import graphene
+from graphene import AbstractType, Node
+from graphene_django.filter import DjangoFilterConnectionField
+from graphene_django.types import DjangoObjectType
+
 from django.contrib.auth.models import User as UserModel
 
 from recipe.models import Recipe, Direction, SubRecipe
@@ -11,6 +14,21 @@ from recipe_groups.models import Course, Cuisine, Tag
 from news.models import News
 from ingredient.models import IngredientGroup, Ingredient
 from list.models import GroceryList, GroceryItem
+
+
+
+# Custom node to get rid of global id
+class CustomNode(Node):
+    class Meta:
+        name = 'Node'
+
+    @staticmethod
+    def to_global_id(type, id):
+        return id
+
+    @staticmethod
+    def get_node_from_global_id(id, context, info, only_type=None):
+        return info.return_type.graphene_type._meta.model.objects.get(id=id)
 
 
 class User(DjangoObjectType):
@@ -51,6 +69,8 @@ class TagObject(DjangoObjectType):
 class RecipeObject(DjangoObjectType):
     class Meta:
         model = Recipe
+        interfaces = (CustomNode, )
+        filter_fields = ['id', 'title']
 
 
 class SubRecipeObject(DjangoObjectType):
@@ -73,7 +93,7 @@ class IngredientObject(DjangoObjectType):
         model = Ingredient
 
 
-class Query(graphene.ObjectType):
+class QueryOld(graphene.ObjectType):
     users = graphene.List(User)
     news = graphene.List(NewsObject)
     grocery_lists = graphene.List(GroceryListObject)
@@ -135,4 +155,58 @@ class Query(graphene.ObjectType):
     def resolve_ingredients(self):
         return Ingredient.objects.all()
 
+
+class Query(graphene.ObjectType):
+    recipe = CustomNode.Field(RecipeObject)
+    all_recipes = DjangoFilterConnectionField(RecipeObject)
+
 schema = graphene.Schema(query=Query)
+
+"""
+
+
+query {
+  allRecipes {
+    edges {
+      node {
+        id
+        title
+      }
+    }
+  }
+
+  recipe(id: "4") {
+    title
+  }
+}
+
+query {
+  allRecipes {
+    edges {
+      node {
+        title
+      }
+    }
+  }
+}
+
+query loadRecipeById($id: recipes){
+  recipes(recipes: $id) {
+    title
+  }
+}
+
+
+
+query CreateRecipeById($id: id!, $recipe: recipe!){
+  createRecipe(id: $id, recipe: $recipe) {
+    title
+  }
+}
+
+{
+  "id": "4",
+  "recipe": {
+    "title": "asd",
+  }
+}"""
