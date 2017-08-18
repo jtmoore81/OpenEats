@@ -173,6 +173,12 @@ query {
         title
       }
     }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
   }
 
   recipe(id: "4") {
