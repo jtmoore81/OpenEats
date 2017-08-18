@@ -116,7 +116,10 @@ INSTALLED_APPS = (
 
 # Where your Graphene schema lives
 GRAPHENE = {
-    'SCHEMA': 'v1.graphql.schema'
+    'SCHEMA': 'base.graphql.schema',
+    'MIDDLEWARE': (
+        'graphene_django.debug.DjangoDebugMiddleware',
+    )
 }
 
 # Password validation
