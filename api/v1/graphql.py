@@ -166,7 +166,7 @@ schema = graphene.Schema(query=Query)
 
 
 query {
-  allRecipes {
+  allRecipes(first:2) {
     edges {
       node {
         id
