@@ -35,3 +35,14 @@ class DirectionNode(DjangoObjectType):
 class DirectionQuery(AbstractType):
     direction = InternalIdNode.Field(DirectionNode)
     all_directions = DjangoFilterConnectionField(DirectionNode)
+
+
+class SubRecipeNode(DjangoObjectType):
+    class Meta:
+        model = SubRecipe
+        interfaces = (InternalIdNode, )
+
+
+class SubRecipeQuery(AbstractType):
+    sub_recipe = InternalIdNode.Field(SubRecipeNode)
+    all_sub_recipes = DjangoFilterConnectionField(SubRecipeNode)

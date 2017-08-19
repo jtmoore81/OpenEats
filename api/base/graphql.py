@@ -6,6 +6,9 @@ from graphene import ObjectType, Field, Schema
 from graphene_django.debug import DjangoDebug
 from v1.recipe.schema import RecipeQuery, DirectionQuery
 from v1.recipe_groups.schema import TagQuery, CourseQuery, CuisineQuery
+from v1.news.schema import NewsQuery
+from v1.ingredient.schema import IngredientGroupQuery, IngredientQuery
+from v1.list.schema import GroceryListQuery, GroceryItemQuery
 
 
 class Query(
@@ -14,6 +17,11 @@ class Query(
     TagQuery,
     CourseQuery,
     CuisineQuery,
+    NewsQuery,
+    IngredientGroupQuery,
+    IngredientQuery,
+    GroceryListQuery,
+    GroceryItemQuery,
     ObjectType,
 ):
     debug = Field(DjangoDebug, name='__debug')
