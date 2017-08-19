@@ -4,16 +4,45 @@ from __future__ import unicode_literals
 
 from graphene import ObjectType, Field, Schema
 from graphene_django.debug import DjangoDebug
-from v1.recipe.schema import RecipeQuery
+from v1.recipe.schema import RecipeQuery, DirectionQuery
+from v1.recipe_groups.schema import TagQuery, CourseQuery, CuisineQuery
 
 
-class Query(RecipeQuery, ObjectType):
+class Query(
+    RecipeQuery,
+    DirectionQuery,
+    TagQuery,
+    CourseQuery,
+    CuisineQuery,
+    ObjectType,
+):
     debug = Field(DjangoDebug, name='__debug')
 
 
 schema = Schema(query=Query)
 
 """
+
+
+
+query {
+  allCourses {
+    edges {
+      node {
+        title
+        recipeSet {
+          totalCount
+          edges {
+            node {
+              title
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 
 
 query {

@@ -6,8 +6,8 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphene_django.types import DjangoObjectType
 from graphene import AbstractType
 
-
 from v1.common.internal_id_node import InternalIdNode
+from v1.common.total_count import connection_for_type
 from .models import Recipe, Direction, SubRecipe
 
 
@@ -17,7 +17,21 @@ class RecipeNode(DjangoObjectType):
         interfaces = (InternalIdNode, )
         filter_fields = ['id', 'title']
 
+RecipeNode.Connection = connection_for_type(RecipeNode)
+
 
 class RecipeQuery(AbstractType):
     recipe = InternalIdNode.Field(RecipeNode)
     all_recipes = DjangoFilterConnectionField(RecipeNode)
+
+
+class DirectionNode(DjangoObjectType):
+    class Meta:
+        model = Direction
+        interfaces = (InternalIdNode, )
+        filter_fields = ['id', 'title']
+
+
+class DirectionQuery(AbstractType):
+    direction = InternalIdNode.Field(DirectionNode)
+    all_directions = DjangoFilterConnectionField(DirectionNode)
