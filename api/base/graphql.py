@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 from graphene import ObjectType, Field, Schema
 from graphene_django.debug import DjangoDebug
-from v1.recipe.schema import RecipeQuery, DirectionQuery
+from v1.recipe.schema import RecipeQuery, DirectionQuery, SubRecipeQuery
 from v1.recipe_groups.schema import TagQuery, CourseQuery, CuisineQuery
 from v1.news.schema import NewsQuery
 from v1.ingredient.schema import IngredientGroupQuery, IngredientQuery
