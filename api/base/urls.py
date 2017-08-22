@@ -7,7 +7,28 @@ from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
+from django.views.decorators.csrf import csrf_exempt
 from graphene_django.views import GraphQLView
+import rest_framework
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import authentication_classes, permission_classes, api_view
+from rest_framework.settings import api_settings
+
+
+class DRFAuthenticatedGraphQLView(GraphQLView):
+    def parse_body(self, request):
+        if isinstance(request, rest_framework.request.Request):
+            return request.data
+        return super(GraphQLView, self).parse_body(request)
+
+    @classmethod
+    def as_view(cls, *args, **kwargs):
+        view = super(GraphQLView, cls).as_view(*args, **kwargs)
+        view = permission_classes((IsAuthenticated,))(view)
+        view = authentication_classes(api_settings.DEFAULT_AUTHENTICATION_CLASSES)(view)
+        view = api_view(['GET', 'POST'])(view)
+        return view
+
 
 admin.autodiscover()
 
@@ -17,7 +38,8 @@ urlpatterns = [
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
     # GraphQL
-    url(r'^graphql/', GraphQLView.as_view(graphiql=True)),
+    url(r'^graphql_token', csrf_exempt(DRFAuthenticatedGraphQLView.as_view())),
+    url(r'^graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True))),
 
     # Generic Static Home
     url(r'^$', TemplateView.as_view(template_name='index.html'), name='home'),

@@ -4,8 +4,8 @@ from __future__ import unicode_literals
 
 from graphene import ObjectType, Field, Schema
 from graphene_django.debug import DjangoDebug
-from v1.recipe.schema import RecipeQuery, DirectionQuery, SubRecipeQuery
-from v1.recipe_groups.schema import TagQuery, CourseQuery, CuisineQuery
+from v1.recipe.schema import RecipeQuery, DirectionQuery, SubRecipeQuery, RecipeMutations, DirectionMutations
+from v1.recipe_groups.schema import RecipeGroupQuery, RecipeGroupMutations
 from v1.news.schema import NewsQuery
 from v1.ingredient.schema import IngredientGroupQuery, IngredientQuery
 from v1.list.schema import GroceryListQuery, GroceryItemQuery
@@ -13,10 +13,9 @@ from v1.list.schema import GroceryListQuery, GroceryItemQuery
 
 class Query(
     RecipeQuery,
+    SubRecipeQuery,
     DirectionQuery,
-    TagQuery,
-    CourseQuery,
-    CuisineQuery,
+    RecipeGroupQuery,
     NewsQuery,
     IngredientGroupQuery,
     IngredientQuery,
@@ -27,10 +26,36 @@ class Query(
     debug = Field(DjangoDebug, name='__debug')
 
 
-schema = Schema(query=Query)
+class Mutation(RecipeMutations, RecipeGroupMutations, DirectionMutations, ObjectType):
+    pass
+
+schema = Schema(query=Query, mutation=Mutation)
 
 """
-
+mutation {
+  createRecipe(
+    title: "does this work",
+    info: "does this work",
+    source: "does this work",
+    prepTime: 1,
+    cookTime: 1,
+    servings: 1,
+    rating: 1,
+  ) {
+    recipe {
+      id
+      title
+      directions {
+        edges {
+          node {
+            id,
+            title
+          }
+        }
+      }
+    }
+  }
+}
 
 
 query {
