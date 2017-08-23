@@ -8,7 +8,7 @@ from v1.recipe.schema import RecipeQuery, DirectionQuery, SubRecipeQuery, Recipe
 from v1.recipe_groups.schema import RecipeGroupQuery, RecipeGroupMutations
 from v1.news.schema import NewsQuery
 from v1.ingredient.schema import IngredientGroupQuery, IngredientQuery
-from v1.list.schema import GroceryListQuery, GroceryItemQuery
+from v1.list.schema import ListQuery, ListMutations
 
 
 class Query(
@@ -19,19 +19,44 @@ class Query(
     NewsQuery,
     IngredientGroupQuery,
     IngredientQuery,
-    GroceryListQuery,
-    GroceryItemQuery,
+    ListQuery,
     ObjectType,
 ):
     debug = Field(DjangoDebug, name='__debug')
 
 
-class Mutation(RecipeMutations, RecipeGroupMutations, DirectionMutations, ObjectType):
+class Mutation(
+    RecipeMutations,
+    RecipeGroupMutations,
+    DirectionMutations,
+    ListMutations,
+    ObjectType
+):
     pass
 
 schema = Schema(query=Query, mutation=Mutation)
 
 """
+
+query {
+  allGroceryLists {
+    edges {
+      node {
+        title
+        items {
+    			totalCount
+          edges {
+            node {
+              title
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
 mutation {
   createRecipe(
     title: "does this work",
