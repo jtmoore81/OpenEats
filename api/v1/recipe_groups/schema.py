@@ -40,31 +40,34 @@ class RecipeGroupQuery(graphene.AbstractType):
     all_tags = DjangoFilterConnectionField(TagNode)
 
 
-class DeleteModel(graphene.Mutation):
+class DeleteModel(graphene.AbstractType):
     class Input:
         id = graphene.ID()
 
     deleted = graphene.Boolean()
 
-    @staticmethod
-    def mutate(root, args, context, info, model=None):
+    @classmethod
+    def mutate(cls, root, args, context, info, model=None):
         try:
-            model.objects.filter(id=args.get('id')).delete()
+            cls.Config.model.objects.filter(id=args.get('id')).delete()
             deleted = True
         except:
             deleted = False
-        return DeleteModel(deleted=deleted)
+        return cls(deleted=deleted)
 
-
-class DeleteCuisine(DeleteModel):
+class DeleteCuisine(DeleteModel, graphene.Mutation):
+    class Config:
+        model = Tag
     class Input:
         id = graphene.ID()
 
-    deleted = graphene.Boolean()
+    # deleted = graphene.Boolean()
 
-    @staticmethod
-    def mutate(root, args, context, info, model=None):
-        return super(DeleteCuisine, DeleteCuisine).mutate(root, args, context, info, model=Cuisine)
+    # deleted = graphene.Boolean()
+    #
+    # @classmethod
+    # def mutate(cls, root, args, context, info, model=None):
+    #     return super(DeleteCuisine, DeleteCuisine).mutate(cls, root, args, context, info, model=Cuisine)
 
 
 class CreateCuisine(graphene.Mutation):
