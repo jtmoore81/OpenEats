@@ -7,6 +7,7 @@ from graphene_django.types import DjangoObjectType
 import graphene
 
 from v1.common.internal_id_node import InternalIdNode
+from v1.common.deletion import DeleteModel, DeleteMutation
 from .models import Tag, Course, Cuisine
 
 
@@ -40,34 +41,9 @@ class RecipeGroupQuery(graphene.AbstractType):
     all_tags = DjangoFilterConnectionField(TagNode)
 
 
-class DeleteModel(graphene.AbstractType):
-    class Input:
-        id = graphene.ID()
-
-    deleted = graphene.Boolean()
-
-    @classmethod
-    def mutate(cls, root, args, context, info, model=None):
-        try:
-            cls.Config.model.objects.filter(id=args.get('id')).delete()
-            deleted = True
-        except:
-            deleted = False
-        return cls(deleted=deleted)
-
-class DeleteCuisine(DeleteModel, graphene.Mutation):
+class DeleteCuisine(DeleteModel, DeleteMutation):
     class Config:
         model = Tag
-    class Input:
-        id = graphene.ID()
-
-    # deleted = graphene.Boolean()
-
-    # deleted = graphene.Boolean()
-    #
-    # @classmethod
-    # def mutate(cls, root, args, context, info, model=None):
-    #     return super(DeleteCuisine, DeleteCuisine).mutate(cls, root, args, context, info, model=Cuisine)
 
 
 class CreateCuisine(graphene.Mutation):
