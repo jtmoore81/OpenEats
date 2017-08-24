@@ -11,6 +11,8 @@ from graphene.utils.props import props
 from graphene.types.field import Field
 from graphene.types.objecttype import ObjectType, ObjectTypeMeta
 
+from .list_scalar import List
+
 
 class DeleteMutationMeta(ObjectTypeMeta):
 
@@ -46,13 +48,15 @@ class DeleteModel(graphene.AbstractType):
     @staticmethod
     def input_class():
         class Input:
-            id = graphene.ID()
+            data = graphene.Argument(DeleteInput)
         return Input
 
     @classmethod
     def mutate(cls, root, args, context, info):
         try:
-            cls.Config.model.objects.filter(id=args.get('id')).delete()
+            cls.Config.model.objects.filter(
+                id=args.get('data').get('id')
+            ).delete()
             deleted = True
         except:
             deleted = False
@@ -60,7 +64,7 @@ class DeleteModel(graphene.AbstractType):
 
 
 class BulkDeleteInput(graphene.InputObjectType):
-    ids = graphene.types.json.JSONString
+    ids = List()
 
 
 class BulkDeleteModel(graphene.AbstractType):
@@ -75,7 +79,9 @@ class BulkDeleteModel(graphene.AbstractType):
     @classmethod
     def mutate(cls, root, args, context, info):
         try:
-            cls.Config.model.objects.filter(id=args.get('id')).delete()
+            ids = args.get('data').get('ids')
+            for pk in ids:
+                cls.Config.model.objects.filter(id=pk).delete()
             deleted = True
         except:
             deleted = False
