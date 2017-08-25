@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 from graphene import Int, Connection
 
 
-def connection_for_type(_type):
+def total_count(_type):
     class Con(Connection):
         total_count = Int()
 

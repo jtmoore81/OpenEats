@@ -7,7 +7,7 @@ from graphene_django.types import DjangoObjectType
 import graphene
 
 from v1.common.internal_id_node import InternalIdNode
-from v1.common.total_count import connection_for_type
+from v1.common.total_count import total_count
 from .models import Recipe, Direction, SubRecipe
 
 
@@ -17,7 +17,7 @@ class RecipeNode(DjangoObjectType):
         interfaces = (InternalIdNode, )
         filter_fields = ['id', 'title']
 
-RecipeNode.Connection = connection_for_type(RecipeNode)
+RecipeNode.Connection = total_count(RecipeNode)
 
 
 class RecipeQuery(graphene.AbstractType):

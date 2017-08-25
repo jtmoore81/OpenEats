@@ -7,7 +7,7 @@ from graphene_django.types import DjangoObjectType
 import graphene
 
 from v1.common.internal_id_node import InternalIdNode
-from v1.common.total_count import connection_for_type
+from v1.common.total_count import total_count
 from .models import GroceryList, GroceryItem
 
 
@@ -24,7 +24,7 @@ class GroceryItemNode(DjangoObjectType):
         interfaces = (InternalIdNode, )
         filter_fields = ['id', 'title']
 
-GroceryItemNode.Connection = connection_for_type(GroceryItemNode)
+GroceryItemNode.Connection = total_count(GroceryItemNode)
 
 
 class ListQuery(graphene.AbstractType):
