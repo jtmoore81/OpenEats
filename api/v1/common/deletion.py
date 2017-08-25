@@ -73,7 +73,7 @@ class BulkDeleteModel(graphene.AbstractType):
     @staticmethod
     def input_class():
         class Input:
-            id = graphene.ID()
+            data = graphene.Argument(BulkDeleteInput)
         return Input
 
     @classmethod
@@ -81,7 +81,7 @@ class BulkDeleteModel(graphene.AbstractType):
         try:
             ids = args.get('data').get('ids')
             for pk in ids:
-                cls.Config.model.objects.filter(id=pk).delete()
+                cls.Config.model.objects.filter(id=pk.value).delete()
             deleted = True
         except:
             deleted = False

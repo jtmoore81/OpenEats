@@ -7,7 +7,7 @@ from graphene_django.types import DjangoObjectType
 import graphene
 
 from v1.common.internal_id_node import InternalIdNode
-from v1.common.deletion import DeleteModel, DeleteMutation
+from v1.common.deletion import DeleteModel, DeleteMutation, BulkDeleteModel
 from .models import Tag, Course, Cuisine
 
 
@@ -43,7 +43,12 @@ class RecipeGroupQuery(graphene.AbstractType):
 
 class DeleteCuisine(DeleteModel, DeleteMutation):
     class Config:
-        model = Tag
+        model = Cuisine
+
+
+class BulkDeleteCuisine(BulkDeleteModel, DeleteMutation):
+    class Config:
+        model = Cuisine
 
 
 class CreateCuisine(graphene.Mutation):
@@ -62,4 +67,5 @@ class CreateCuisine(graphene.Mutation):
 
 class RecipeGroupMutations(graphene.AbstractType):
     delete_cuisine = DeleteCuisine.Field()
+    bulk_delete_cuisine = BulkDeleteCuisine.Field()
     create_cuisine = CreateCuisine.Field()

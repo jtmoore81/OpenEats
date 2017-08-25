@@ -12,13 +12,9 @@ class List(Scalar):
     """
 
     parse_value = list
-
-    @staticmethod
-    def serialize(array):
-        array = array[1:-1]
-        return [x.strip() for x in array.split(',')]
+    serialize = list
 
     @staticmethod
     def parse_literal(node):
-        if isinstance(node, ast.StringValue):
-            return node.value
+        if isinstance(node, ast.ListValue):
+            return node.values
