@@ -108,6 +108,7 @@ class RecipeInput(graphene.InputObjectType):
     id = graphene.ID()
     course = graphene.ID()
     cuisine = graphene.ID()
+    title = graphene.String()
     info = graphene.String()
     source = graphene.String()
     prep_time = graphene.Int()
