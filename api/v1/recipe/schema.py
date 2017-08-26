@@ -7,7 +7,9 @@ from graphene_django.types import DjangoObjectType
 import graphene
 
 from v1.common.internal_id_node import InternalIdNode
+from v1.common.deletion import DeleteModel, DeleteMutation
 from v1.common.total_count import total_count
+from v1.common.list_scalar import List
 from .models import Recipe, Direction, SubRecipe
 
 
@@ -20,21 +22,11 @@ class RecipeNode(DjangoObjectType):
 RecipeNode.Connection = total_count(RecipeNode)
 
 
-class RecipeQuery(graphene.AbstractType):
-    recipe = InternalIdNode.Field(RecipeNode)
-    all_recipes = DjangoFilterConnectionField(RecipeNode)
-
-
 class DirectionNode(DjangoObjectType):
     class Meta:
         model = Direction
         interfaces = (InternalIdNode, )
         filter_fields = ['id', 'title']
-
-
-class DirectionQuery(graphene.AbstractType):
-    direction = InternalIdNode.Field(DirectionNode)
-    all_directions = DjangoFilterConnectionField(DirectionNode)
 
 
 class SubRecipeNode(DjangoObjectType):
@@ -43,26 +35,43 @@ class SubRecipeNode(DjangoObjectType):
         interfaces = (InternalIdNode, )
 
 
-class SubRecipeQuery(graphene.AbstractType):
+class RecipeQuery(graphene.AbstractType):
     sub_recipe = InternalIdNode.Field(SubRecipeNode)
     all_sub_recipes = DjangoFilterConnectionField(SubRecipeNode)
+    direction = InternalIdNode.Field(DirectionNode)
+    all_directions = DjangoFilterConnectionField(DirectionNode)
+    recipe = InternalIdNode.Field(RecipeNode)
+    all_recipes = DjangoFilterConnectionField(RecipeNode)
+
+
+class SubRecipeInput(graphene.InputObjectType):
+    id = graphene.ID()
+    child_recipe = graphene.ID()
+    parent_recipe = graphene.ID()
+    quantity = graphene.Float()
+    measurement = graphene.String()
+
+
+class DirectionInput(graphene.InputObjectType):
+    id = graphene.ID()
+    recipe = graphene.ID()
+    step = graphene.Int()
+    title = graphene.String()
 
 
 class CreateDirection(graphene.Mutation):
     class Input:
-        # recipe = graphene.Int()
-        step = graphene.Int()
-        title = graphene.String()
+        data = graphene.Argument(DirectionInput)
 
     direction = graphene.Field(lambda: DirectionNode)
 
     @staticmethod
     def mutate(root, args, context, info):
-        title = args.get('title')
-        # recipe = args.get('recipe')
-        step = args.get('step')
-        direction, created = Direction.objects.get_or_create(
-            # recipe=recipe,
+        title = args.get('data').get('title')
+        recipe = args.get('data').get('recipe')
+        step = args.get('data').get('step')
+        direction, created = Direction.objects.create(
+            recipe=recipe,
             title=title,
             step=step
         )
@@ -70,44 +79,69 @@ class CreateDirection(graphene.Mutation):
         return CreateDirection(direction=direction)
 
 
-class DirectionMutations(graphene.AbstractType):
-    create_direction = CreateDirection.Field()
+class UpdateDirection(graphene.Mutation):
+    class Input:
+        data = graphene.Argument(DirectionInput)
+
+    direction = graphene.Field(lambda: DirectionNode)
+
+    @staticmethod
+    def mutate(root, args, context, info):
+        key = args.get('data').get('id')
+        title = args.get('data').get('title')
+        step = args.get('data').get('step')
+        direction = Direction.objects.get(id=key)
+        if title:
+            direction.title = title
+        if step:
+            direction.step = step
+        direction.save()
+        return CreateDirection(direction=direction)
+
+
+class DeleteDirection(DeleteModel, DeleteMutation):
+    class Config:
+        model = Direction
+
+
+class RecipeInput(graphene.InputObjectType):
+    id = graphene.ID()
+    course = graphene.ID()
+    cuisine = graphene.ID()
+    info = graphene.String()
+    source = graphene.String()
+    prep_time = graphene.Int()
+    cook_time = graphene.Int()
+    servings = graphene.Int()
+    rating = graphene.Int()
+    direction = graphene.Argument(DirectionInput)
+    sub_recipes = graphene.Argument(SubRecipeInput)
+    tags = List()
 
 
 class CreateRecipe(graphene.Mutation):
     class Input:
-        title = graphene.String()
-
-        # author = models.ForeignKey(User, verbose_name=_('user'), null=True)
-        # photo = models.ImageField(_('photo'), blank=True, upload_to="upload/recipe_photos")
-        # cuisine = models.ForeignKey(Cuisine, verbose_name=_('cuisine'))
-        # course = models.ForeignKey(Course, verbose_name=_('course'))
-        # tags = models.ManyToManyField(Tag, verbose_name=_('tag'), blank=True)
-        # subrecipes = models.ManyToManyField('self', verbose_name=_('subrecipes'), through='SubRecipe',
-        #                                     symmetrical=False)
-        info = graphene.String()
-        source = graphene.String()
-        prep_time = graphene.Int()
-        cook_time = graphene.Int()
-        servings = graphene.Int()
-        rating = graphene.Int()
-        # direction = graphene.Argument()
+        # author
+        # photo
+        data = graphene.Argument(RecipeInput)
 
     recipe = graphene.Field(lambda: RecipeNode)
 
     @staticmethod
     def mutate(root, args, context, info):
         print context.user
-        print args.get('title')
-        title = args.get('title')
-        info = args.get('info')
-        source = args.get('source')
-        prep_time = args.get('prep_time')
-        cook_time = args.get('cook_time')
-        servings = args.get('servings')
-        rating = args.get('rating')
+        files = context.FILES
+        print files
 
-        recipe, created = Recipe.objects.get_or_create(
+        title = args.get('data').get('title')
+        info = args.get('data').get('info')
+        source = args.get('data').get('source')
+        prep_time = args.get('data').get('prep_time')
+        cook_time = args.get('data').get('cook_time')
+        servings = args.get('data').get('servings')
+        rating = args.get('data').get('rating')
+
+        recipe = Recipe.objects.create(
             title=title,
             info=info,
             source=source,
@@ -124,3 +158,5 @@ class CreateRecipe(graphene.Mutation):
 
 class RecipeMutations(graphene.AbstractType):
     create_recipe = CreateRecipe.Field()
+    create_direction = CreateDirection.Field()
+    delete_direction = DeleteDirection.Field()

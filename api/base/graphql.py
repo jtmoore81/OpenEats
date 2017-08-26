@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 from graphene import ObjectType, Field, Schema
 from graphene_django.debug import DjangoDebug
-from v1.recipe.schema import RecipeQuery, DirectionQuery, SubRecipeQuery, RecipeMutations, DirectionMutations
+from v1.recipe.schema import RecipeQuery, RecipeMutations
 from v1.recipe_groups.schema import RecipeGroupQuery, RecipeGroupMutations
 from v1.news.schema import NewsQuery
 from v1.ingredient.schema import IngredientQuery, IngredientMutations
@@ -12,11 +12,9 @@ from v1.list.schema import ListQuery, ListMutations
 
 
 class Query(
-    RecipeQuery,
-    SubRecipeQuery,
-    DirectionQuery,
-    RecipeGroupQuery,
     NewsQuery,
+    RecipeQuery,
+    RecipeGroupQuery,
     IngredientQuery,
     ListQuery,
     ObjectType,
@@ -26,7 +24,6 @@ class Query(
 
 class Mutation(
     RecipeMutations,
-    DirectionMutations,
     RecipeGroupMutations,
     IngredientMutations,
     ListMutations,
