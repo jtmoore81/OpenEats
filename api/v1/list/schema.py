@@ -114,7 +114,6 @@ class UpdateGroceryItem(graphene.Mutation):
         list_id = args.get('data').get('list')
         title = args.get('data').get('title')
         completed = args.get('data').get('completed')
-        print completed
         grocery_item = GroceryItem.objects.get(id=key)
         if list_id:
             grocery_item.list_id = list_id
