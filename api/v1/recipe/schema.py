@@ -132,7 +132,7 @@ class CreateRecipe(graphene.Mutation):
     def mutate(root, args, context, info):
         print context.user
         files = context.FILES
-        print files
+        print files.photo
 
         title = args.get('data').get('title')
         info = args.get('data').get('info')
@@ -152,6 +152,7 @@ class CreateRecipe(graphene.Mutation):
             rating=rating,
             cuisine_id=1,
             course_id=1,
+            photo=files.photo
         )
         recipe.save()
         return CreateRecipe(recipe=recipe)
