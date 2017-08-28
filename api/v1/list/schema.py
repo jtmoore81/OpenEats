@@ -16,14 +16,14 @@ class GroceryListNode(DjangoObjectType):
     class Meta:
         model = GroceryList
         interfaces = (InternalIdNode, )
-        filter_fields = ['id', 'title']
+        filter_fields = ['id', 'author']
 
 
 class GroceryItemNode(DjangoObjectType):
     class Meta:
         model = GroceryItem
         interfaces = (InternalIdNode, )
-        filter_fields = ['id', 'title']
+        filter_fields = ['id', 'list__title', 'list__id']
 
 GroceryItemNode.Connection = total_count(GroceryItemNode)
 
