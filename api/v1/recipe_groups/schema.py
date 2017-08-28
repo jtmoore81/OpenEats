@@ -6,7 +6,6 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphene_django.types import DjangoObjectType
 import graphene
 
-from v1.common.internal_id_node import InternalIdNode
 from v1.common.deletion import DeleteModel, DeleteMutation
 from .models import Tag, Course, Cuisine
 
@@ -14,30 +13,30 @@ from .models import Tag, Course, Cuisine
 class TagNode(DjangoObjectType):
     class Meta:
         model = Tag
-        interfaces = (InternalIdNode, )
+        interfaces = (graphene.relay.Node, )
         filter_fields = ['id', 'title']
 
 
 class CourseNode(DjangoObjectType):
     class Meta:
         model = Course
-        interfaces = (InternalIdNode, )
+        interfaces = (graphene.relay.Node, )
         filter_fields = ['id', 'title']
 
 
 class CuisineNode(DjangoObjectType):
     class Meta:
         model = Cuisine
-        interfaces = (InternalIdNode, )
+        interfaces = (graphene.relay.Node, )
         filter_fields = ['id', 'title']
 
 
 class RecipeGroupQuery(graphene.AbstractType):
-    cuisine = InternalIdNode.Field(CuisineNode)
+    cuisine = graphene.relay.Node.Field(CuisineNode)
     all_cuisines = DjangoFilterConnectionField(CuisineNode)
-    course = InternalIdNode.Field(CourseNode)
+    course = graphene.relay.Node.Field(CourseNode)
     all_courses = DjangoFilterConnectionField(CourseNode)
-    tag = InternalIdNode.Field(TagNode)
+    tag = graphene.relay.Node.Field(TagNode)
     all_tags = DjangoFilterConnectionField(TagNode)
 
 

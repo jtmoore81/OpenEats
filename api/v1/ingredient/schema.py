@@ -6,7 +6,6 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphene_django.types import DjangoObjectType
 import graphene
 
-from v1.common.internal_id_node import InternalIdNode
 from v1.common.deletion import DeleteModel, DeleteMutation, BulkDeleteModel
 from .models import Ingredient, IngredientGroup
 
@@ -14,21 +13,21 @@ from .models import Ingredient, IngredientGroup
 class IngredientGroupNode(DjangoObjectType):
     class Meta:
         model = IngredientGroup
-        interfaces = (InternalIdNode, )
+        interfaces = (graphene.relay.Node, )
         filter_fields = ['id', 'title']
 
 
 class IngredientNode(DjangoObjectType):
     class Meta:
         model = Ingredient
-        interfaces = (InternalIdNode, )
+        interfaces = (graphene.relay.Node, )
         filter_fields = ['id', 'title']
 
 
 class IngredientQuery(graphene.AbstractType):
-    ingredient_group = InternalIdNode.Field(IngredientGroupNode)
+    ingredient_group = graphene.relay.Node.Field(IngredientGroupNode)
     all_ingredient_groups = DjangoFilterConnectionField(IngredientGroupNode)
-    ingredient = InternalIdNode.Field(IngredientNode)
+    ingredient = graphene.relay.Node.Field(IngredientNode)
     all_ingredients = DjangoFilterConnectionField(IngredientNode)
 
 

@@ -38,8 +38,7 @@ urlpatterns = [
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
     # GraphQL
-    url(r'^graphql_token', csrf_exempt(DRFAuthenticatedGraphQLView.as_view())),
-    url(r'^graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True))),
+    url(r'^graphql', csrf_exempt(DRFAuthenticatedGraphQLView.as_view())),
 
     # Generic Static Home
     url(r'^$', TemplateView.as_view(template_name='index.html'), name='home'),
@@ -48,3 +47,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += [url(r'^graphiql/', csrf_exempt(GraphQLView.as_view(graphiql=True)))]

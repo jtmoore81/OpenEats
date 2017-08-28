@@ -6,7 +6,6 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphene_django.types import DjangoObjectType
 import graphene
 
-from v1.common.internal_id_node import InternalIdNode
 from v1.common.total_count import total_count
 from v1.common.deletion import DeleteModel, DeleteMutation, BulkDeleteModel
 from .models import GroceryList, GroceryItem
@@ -15,24 +14,47 @@ from .models import GroceryList, GroceryItem
 class GroceryListNode(DjangoObjectType):
     class Meta:
         model = GroceryList
-        interfaces = (InternalIdNode, )
+        interfaces = (graphene.relay.Node, )
         filter_fields = ['id', 'author']
+
+    @classmethod
+    def get_node(cls, id, context, info):
+        try:
+            glist = cls._meta.model.objects.get(id=id)
+        except cls._meta.model.DoesNotExist:
+            return None
+
+        if context.user == glist.author:
+            return glist
+        return None
 
 
 class GroceryItemNode(DjangoObjectType):
     class Meta:
         model = GroceryItem
-        interfaces = (InternalIdNode, )
+        interfaces = (graphene.relay.Node, )
         filter_fields = ['id', 'list__title', 'list__id']
 
 GroceryItemNode.Connection = total_count(GroceryItemNode)
 
 
 class ListQuery(graphene.AbstractType):
-    grocery_list = InternalIdNode.Field(GroceryListNode)
+    grocery_list = graphene.Node.Field(GroceryListNode)
     all_grocery_lists = DjangoFilterConnectionField(GroceryListNode)
-    grocery_item = InternalIdNode.Field(GroceryItemNode)
+    grocery_item = graphene.relay.Node.Field(GroceryItemNode)
     all_grocery_items = DjangoFilterConnectionField(GroceryItemNode)
+
+    def resolve_all_grocery_lists(self, args, context, info):
+        if not context.user.is_authenticated():
+            return GroceryList.objects.none()
+        else:
+            return GroceryList.objects.filter(author=context.user)
+
+    def resolve_all_grocery_items(self, args, context, info):
+        if not context.user.is_authenticated():
+            return GroceryItem.objects.none()
+        else:
+            return GroceryItem.objects.filter(list__author=context.user)
 
 
 class GroceryListInput(graphene.InputObjectType):

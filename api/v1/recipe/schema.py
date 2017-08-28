@@ -6,7 +6,6 @@ from graphene_django.filter import DjangoFilterConnectionField
 from graphene_django.types import DjangoObjectType
 import graphene
 
-from v1.common.internal_id_node import InternalIdNode
 from v1.common.deletion import DeleteModel, DeleteMutation
 from v1.common.total_count import total_count
 from v1.common.list_scalar import List
@@ -16,7 +15,7 @@ from .models import Recipe, Direction, SubRecipe
 class RecipeNode(DjangoObjectType):
     class Meta:
         model = Recipe
-        interfaces = (InternalIdNode, )
+        interfaces = (graphene.relay.Node, )
         filter_fields = ['id', 'title']
 
 RecipeNode.Connection = total_count(RecipeNode)
@@ -25,22 +24,22 @@ RecipeNode.Connection = total_count(RecipeNode)
 class DirectionNode(DjangoObjectType):
     class Meta:
         model = Direction
-        interfaces = (InternalIdNode, )
+        interfaces = (graphene.relay.Node, )
         filter_fields = ['id', 'title']
 
 
 class SubRecipeNode(DjangoObjectType):
     class Meta:
         model = SubRecipe
-        interfaces = (InternalIdNode, )
+        interfaces = (graphene.relay.Node, )
 
 
 class RecipeQuery(graphene.AbstractType):
-    sub_recipe = InternalIdNode.Field(SubRecipeNode)
+    sub_recipe = graphene.relay.Node.Field(SubRecipeNode)
     all_sub_recipes = DjangoFilterConnectionField(SubRecipeNode)
-    direction = InternalIdNode.Field(DirectionNode)
+    direction = graphene.relay.Node.Field(DirectionNode)
     all_directions = DjangoFilterConnectionField(DirectionNode)
-    recipe = InternalIdNode.Field(RecipeNode)
+    recipe = graphene.relay.Node.Field(RecipeNode)
     all_recipes = DjangoFilterConnectionField(RecipeNode)
 
 
