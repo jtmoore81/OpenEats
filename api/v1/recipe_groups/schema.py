@@ -55,9 +55,26 @@ class CreateCuisine(graphene.Mutation):
     @staticmethod
     def mutate(root, args, context, info):
         title = args.get('data').get('title')
-        cuisine, created = Cuisine.objects.get_or_create(title=title)
+        cuisine = Cuisine.objects.create(title=title)
         cuisine.save()
         return CreateCuisine(cuisine=cuisine)
+
+
+class UpdateCuisine(graphene.Mutation):
+    class Input:
+        data = graphene.Argument(GroceryCuisineInput)
+
+    cuisine = graphene.Field(lambda: CuisineNode)
+
+    @staticmethod
+    def mutate(root, args, context, info):
+        key = args.get('data').get('id')
+        title = args.get('data').get('title')
+        cuisine = Cuisine.objects.get_or_create(id=key)
+        if title:
+            cuisine.title = title
+        cuisine.save()
+        return UpdateCuisine(cuisine=cuisine)
 
 
 class DeleteCuisine(DeleteModel, DeleteMutation):
@@ -79,9 +96,26 @@ class CreateCourse(graphene.Mutation):
     @staticmethod
     def mutate(root, args, context, info):
         title = args.get('data').get('title')
-        course, created = Course.objects.get_or_create(title=title)
+        course = Course.objects.create(title=title)
         course.save()
         return CreateCourse(course=course)
+
+
+class UpdateCourse(graphene.Mutation):
+    class Input:
+        data = graphene.Argument(GroceryCuisineInput)
+
+    course = graphene.Field(lambda: CourseNode)
+
+    @staticmethod
+    def mutate(root, args, context, info):
+        key = args.get('data').get('id')
+        title = args.get('data').get('title')
+        course = Course.objects.get_or_create(id=key)
+        if title:
+            course.title = title
+        course.save()
+        return UpdateCourse(course=course)
 
 
 class DeleteCourse(DeleteModel, DeleteMutation):
@@ -91,6 +125,8 @@ class DeleteCourse(DeleteModel, DeleteMutation):
 
 class RecipeGroupMutations(graphene.AbstractType):
     create_cuisine = CreateCuisine.Field()
+    update_cuisine = UpdateCuisine.Field()
     delete_cuisine = DeleteCuisine.Field()
     create_course = CreateCourse.Field()
+    update_course = UpdateCourse.Field()
     delete_course = DeleteCourse.Field()
