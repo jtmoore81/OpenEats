@@ -8,16 +8,16 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views.decorators.csrf import csrf_exempt
-from graphene_django.views import GraphQLView
-import rest_framework
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import authentication_classes, permission_classes, api_view
 from rest_framework.settings import api_settings
+from rest_framework.request import Request
+from graphene_django.views import GraphQLView
 
 
 class DRFAuthenticatedGraphQLView(GraphQLView):
     def parse_body(self, request):
-        if isinstance(request, rest_framework.request.Request):
+        if isinstance(request, Request):
             return request.data
         return super(GraphQLView, self).parse_body(request)
 

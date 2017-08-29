@@ -15,7 +15,6 @@ class GroceryListNode(DjangoObjectType):
     class Meta:
         model = GroceryList
         interfaces = (graphene.relay.Node, )
-        filter_fields = ['id', 'author']
 
     @classmethod
     def get_node(cls, id, context, info):
@@ -33,7 +32,17 @@ class GroceryItemNode(DjangoObjectType):
     class Meta:
         model = GroceryItem
         interfaces = (graphene.relay.Node, )
-        filter_fields = ['id', 'list__title', 'list__id']
+
+    @classmethod
+    def get_node(cls, id, context, info):
+        try:
+            item = cls._meta.model.objects.get(id=id)
+        except cls._meta.model.DoesNotExist:
+            return None
+
+        if context.user == item.list.author:
+            return item
+        return None
 
 GroceryItemNode.Connection = total_count(GroceryItemNode)
 
@@ -70,10 +79,11 @@ class CreateGroceryList(graphene.Mutation):
 
     @staticmethod
     def mutate(root, args, context, info, model=None):
-        title = args.get('data').get('title')
-        grocery_list = GroceryList.objects.create(title=title, author_id=1)
-        grocery_list.save()
-        return CreateGroceryList(grocery_list=grocery_list)
+        if context.user.is_authenticated():
+            title = args.get('data').get('title')
+            grocery_list = GroceryList.objects.create(title=title, author_id=context.user)
+            grocery_list.save()
+            return CreateGroceryList(grocery_list=grocery_list)
 
 
 class UpdateGroceryList(graphene.Mutation):
@@ -84,12 +94,14 @@ class UpdateGroceryList(graphene.Mutation):
 
     @staticmethod
     def mutate(root, args, context, info, model=None):
-        key = args.get('data').get('id')
-        title = args.get('data').get('title')
-        grocery_list = GroceryList.objects.get(id=key)
-        grocery_list.title = title
-        grocery_list.save()
-        return UpdateGroceryList(grocery_list=grocery_list)
+        if context.user.is_authenticated():
+            key = args.get('data').get('id')
+            grocery_list = GroceryList.objects.get(id=key)
+            if grocery_list.user == context.user:
+                title = args.get('data').get('title')
+                grocery_list.title = title
+                grocery_list.save()
+            return UpdateGroceryList(grocery_list=grocery_list)
 
 
 class DeleteGroceryList(DeleteModel, DeleteMutation):
@@ -132,24 +144,27 @@ class UpdateGroceryItem(graphene.Mutation):
 
     @staticmethod
     def mutate(root, args, context, info, model=None):
-        key = args.get('data').get('id')
-        list_id = args.get('data').get('list')
-        title = args.get('data').get('title')
-        completed = args.get('data').get('completed')
-        grocery_item = GroceryItem.objects.get(id=key)
-        if list_id:
-            grocery_item.list_id = list_id
-        if title:
-            grocery_item.title = title
-        if completed is not None:
-            grocery_item.completed = completed
-        grocery_item.save()
-        return UpdateGroceryItem(grocery_item=grocery_item)
+        if context.user.is_authenticated():
+            key = args.get('data').get('id')
+            grocery_item = GroceryItem.objects.get(id=key)
+            if grocery_item.list.user == context.user:
+                list_id = args.get('data').get('list')
+                title = args.get('data').get('title')
+                completed = args.get('data').get('completed')
+                if list_id:
+                    grocery_item.list_id = list_id
+                if title:
+                    grocery_item.title = title
+                if completed is not None:
+                    grocery_item.completed = completed
+                grocery_item.save()
+                return UpdateGroceryItem(grocery_item=grocery_item)
 
 
 class DeleteGroceryItem(DeleteModel, DeleteMutation):
     class Config:
         model = GroceryItem
+        auth = 'author'
 
 
 class BulkDeleteGroceryItem(BulkDeleteModel, DeleteMutation):

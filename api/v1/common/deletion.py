@@ -53,13 +53,16 @@ class DeleteModel(graphene.AbstractType):
 
     @classmethod
     def mutate(cls, root, args, context, info):
+        deleted = False
         try:
-            cls.Config.model.objects.filter(
-                id=args.get('data').get('id')
-            ).delete()
-            deleted = True
+            if context.user.is_authenticated():
+                cls.Config.model.objects.filter(
+                    id=args.get('data').get('id'),
+                    **{cls.Config.auth: context.user}
+                ).delete()
+                deleted = True
         except:
-            deleted = False
+            pass
         return cls(deleted=deleted)
 
 
@@ -78,11 +81,16 @@ class BulkDeleteModel(graphene.AbstractType):
 
     @classmethod
     def mutate(cls, root, args, context, info):
+        deleted = False
         try:
-            ids = args.get('data').get('ids')
-            for pk in ids:
-                cls.Config.model.objects.filter(id=pk.value).delete()
-            deleted = True
+            if context.user.is_authenticated():
+                ids = args.get('data').get('ids')
+                for pk in ids:
+                    cls.Config.model.objects.filter(
+                        id=pk.value,
+                        **{cls.Config.auth: context.user}
+                    ).delete()
+                deleted = True
         except:
-            deleted = False
+            pass
         return cls(deleted=deleted)
