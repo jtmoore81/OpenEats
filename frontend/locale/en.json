@@ -69,7 +69,7 @@
   "recipe.import.error_message_1": "Something went wrong! Please try again.",
   "recipe.import.error_message_2": "This Website is not supported.",
   "recipe.import.error_message_3": "Please enter a valid URL.",
-  "recipe.import.hide_sites": "show supported sites",
+  "recipe.import.hide_sites": "hide supported sites",
   "recipe.import.show_sites": "show supported sites",
   "recipe.create.name_label": "Recipe name",
   "recipe.create.name_placeholder": "Recipe",
