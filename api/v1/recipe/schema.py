@@ -129,7 +129,6 @@ class CreateRecipe(graphene.Mutation):
 
     @staticmethod
     def mutate(root, args, context, info):
-        print context.user
         photo = context.FILES.get('photo')
 
         title = args.get('data').get('title')
