@@ -107,11 +107,13 @@ class UpdateGroceryList(graphene.Mutation):
 class DeleteGroceryList(DeleteModel, DeleteMutation):
     class Config:
         model = GroceryList
+        auth = 'author'
 
 
 class BulkDeleteGroceryList(BulkDeleteModel, DeleteMutation):
     class Config:
         model = GroceryList
+        auth = 'author'
 
 
 class GroceryItemInput(graphene.InputObjectType):
@@ -164,12 +166,13 @@ class UpdateGroceryItem(graphene.Mutation):
 class DeleteGroceryItem(DeleteModel, DeleteMutation):
     class Config:
         model = GroceryItem
-        auth = 'author'
+        auth = 'list__author'
 
 
 class BulkDeleteGroceryItem(BulkDeleteModel, DeleteMutation):
     class Config:
         model = GroceryItem
+        auth = 'list__author'
 
 
 class ListMutations(graphene.AbstractType):

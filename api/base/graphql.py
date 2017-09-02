@@ -38,5 +38,5 @@ class Mutation(
     if settings.DEBUG:
         debug = Field(DjangoDebug, name='__debug')
 
-schema = Schema(query=Query)
+schema = Schema(query=Query, mutation=Mutation)
 

@@ -17,4 +17,8 @@ class List(Scalar):
     @staticmethod
     def parse_literal(node):
         if isinstance(node, ast.ListValue):
-            return node.values
+            # print 'hi'
+            # print [item.value for item in node.values]
+            # for item in node.values:
+            #     print item
+            return [item.value for item in node.values]

@@ -85,11 +85,10 @@ class BulkDeleteModel(graphene.AbstractType):
         try:
             if context.user.is_authenticated():
                 ids = args.get('data').get('ids')
-                for pk in ids:
-                    cls.Config.model.objects.filter(
-                        id=pk.value,
-                        **{cls.Config.auth: context.user}
-                    ).delete()
+                cls.Config.model.objects.filter(
+                    id__in=ids,
+                    **{cls.Config.auth: context.user}
+                ).delete()
                 deleted = True
         except:
             pass
